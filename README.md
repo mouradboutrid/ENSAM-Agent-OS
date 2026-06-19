@@ -2,7 +2,7 @@
 
 ENSAM-Agent-OS est un système d'exploitation agentique local et gouverné, conçu spécifiquement pour le contexte académique de l'ENSAM Meknès (École Nationale Supérieure d'Arts et Métiers). 
 
-Cette plateforme intègre une architecture multi-agents spécialisés, un système de mémoire tri-couche persistante, un pipeline RAG (Génération Augmentée par Récupération), un registre d'outils standardisé via le protocole MCP (Model Context Protocol) et un mécanisme de débat inter-agents. Le système met l'accent sur la gouvernance, l'observabilité, le contrôle des coûts et le respect strict de la confidentialité des données (conformité RGPD / GDPR).
+Cette plateforme intègre une architecture multi-agents spécialisés, un système de mémoire tri-couche persistante, un pipeline RAG (Génération Augmentée par Récupération), un registre d'outils standardisé via le protocole MCP (Model Context Protocol) et un mécanisme de débat inter-agents. Le système met l'accent sur la gouvernance, l'observabilité, le contrôle des coûts et le respect de la confidentialité des données (conformité RGPD / GDPR).
 
 ---
 
@@ -21,40 +21,27 @@ graph TD
     end
 
     subgraph Kernel ["Couche 3 - Noyau d'Orchestration (AgenticKernel)"]
-        AK[AgenticKernel]
-        EB[Event Bus]
-        Classifier[Intent Classifier]
+        AK[AgenticKernel & Event Bus]
     end
 
     subgraph Agents ["Couche 2 - Agents Spécialisés"]
-        TutorAgent[Tutor Agent]
-        ResearchAgent[Research Agent]
-        OrientationAgent[Orientation Agent]
-        ProjectAgent[Project Agent]
-        AdminAgent[Admin Agent]
-        DebateAgent[Debate Agent]
+        AG[6 Agents : Tutor, Research, Orientation, Project, Admin, Debate]
     end
 
-    subgraph Services ["Couche 1 - Services & Stockage"]
-        Memory[Mémoire Tri-couche]
-        RAG[Pipeline RAG]
-        MCP[Registre d'Outils MCP]
-        Obs[Observabilité & Audit]
-        GDPR[Gestionnaire de Confidentialité]
+    subgraph Services ["Couche 1 - Services Fondamentaux & Stockage"]
+        SRV[Mémoire Tri-couche, Pipeline RAG, Outils MCP, Observabilité & GDPR]
     end
 
     UI --> API
     API --> AK
-    AK --> EB
-    EB --> Classifier
-    Classifier --> Agents
-    Agents --> Services
+    AK --> AG
+    AG --> SRV
     
     style AK fill:#7C3AED,stroke:#5B21B6,color:#fff,stroke-width:2px
     style UI fill:#06B6D4,stroke:#0891B2,color:#fff
     style API fill:#0F172A,stroke:#1E293B,color:#fff
-    style Memory fill:#10B981,stroke:#047857,color:#fff
-    style RAG fill:#F59E0B,stroke:#B45309,color:#fff
+    style AG fill:#3B82F6,stroke:#1D4ED8,color:#fff
+    style SRV fill:#10B981,stroke:#047857,color:#fff
 ```
 
 ### 1. Les 6 Agents Spécialisés
@@ -169,4 +156,5 @@ pdflatex Rapport_Projet_Métier.tex
 ## Auteur et Encadrant
 *   Auteur : Mourad Boutrid (Étudiant en 4A IATD-SI, ENSAM Meknès)
 *   Encadrant : Prof. Hajji Tarik
-*   Module : Représentation et Résolution de Problèmes en IA (Année 2025–2026)
+*   Projet : Projet Métier (Année universitaire 2025-2026)
+*   Module : Représentation et Résolution de Problèmes en IA
