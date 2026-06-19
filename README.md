@@ -157,4 +157,4 @@ pdflatex Rapport_Projet_Métier.tex
 *   Auteur : Mourad Boutrid (Étudiant en 4A IATD-SI, ENSAM Meknès)
 *   Encadrant : Prof. Hajji Tarik
 *   Projet : Projet Métier (Année universitaire 2025-2026)
-*   Module : Représentation et Résolution de Problèmes en IA
+*   Module : Projet Métier
