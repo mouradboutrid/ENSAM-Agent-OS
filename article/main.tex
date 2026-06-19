@@ -1,0 +1,2384 @@
+% ============================================================
+%  ENSAM-Agent-OS : Système d'Exploitation Agentique pour
+%  l'Université — Architecture, Gouvernance et Observabilité
+% ============================================================
+%  Rapport de Projet de Recherche Appliquée
+%  Projet 7 — Intégration Globale
+%  ENSAM Meknès — 4A — Année universitaire 2025–2026
+%  Module : Représentation et Résolution de Problèmes en IA
+%  Encadrant : Prof. Hajji Tarik
+% ============================================================
+%  ⚠ Compatible Overleaf — aucun fichier externe requis
+% ============================================================
+
+\documentclass[12pt, a4paper]{article}
+
+% ── Langue ──────────────────────────────────────────────────
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ── Mise en page ────────────────────────────────────────────
+\usepackage[
+  top=2.5cm, bottom=2.5cm,
+  left=2.5cm, right=2.5cm
+]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% ── Formatage des titres ────────────────────────────────────
+\titleformat{\section}{\normalfont\Large\bfseries\color{ensamprimary}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries\color{ensamprimary!80!black}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% ── Mathématiques ───────────────────────────────────────────
+\usepackage{amsmath, amssymb}
+
+% ── Graphiques et diagrammes ────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{
+  shapes.geometric,
+  arrows.meta,
+  positioning,
+  fit,
+  backgrounds,
+  calc,
+  decorations.pathreplacing,
+  shadows,
+  patterns,
+  matrix
+}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{statistics}
+
+% ── Tableaux ────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ── Code source ─────────────────────────────────────────────
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codebg}{HTML}{F8F9FA}
+\definecolor{codeframe}{HTML}{DEE2E6}
+\definecolor{codegreen}{HTML}{2E7D32}
+\definecolor{codepurple}{HTML}{7B1FA2}
+\definecolor{codeyellow}{HTML}{F57F17}
+\definecolor{codeblue}{HTML}{1565C0}
+\definecolor{codegray}{HTML}{757575}
+\definecolor{codetext}{HTML}{212121}
+\definecolor{codekw}{HTML}{D32F2F}
+
+\lstdefinestyle{pythonstyle}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize\color{codetext},
+  keywordstyle=\color{codekw}\bfseries,
+  keywordstyle=[2]\color{codeblue},
+  stringstyle=\color{codegreen},
+  commentstyle=\color{codegray}\itshape,
+  numberstyle=\tiny\color{codegray},
+  numbers=left,
+  numbersep=8pt,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeframe},
+  framesep=5pt,
+  tabsize=4,
+  showstringspaces=false,
+  language=Python,
+  morekeywords={async, await, self, True, False, None, yield, match, case},
+  morekeywords=[2]{BaseAgent, AgentKernel, MemoryManager, RAGPipeline, MCPRegistry, EventBus, ModelRouter, LLMManager, CostTracker, AuditLogger, GDPRManager, IntentClassifier, BaseModel, FastAPI},
+  aboveskip=1em,
+  belowskip=1em
+}
+\lstdefinestyle{jsonstyle}{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize\color{codetext},
+  stringstyle=\color{codegreen},
+  numbers=left,
+  numberstyle=\tiny\color{codegray},
+  numbersep=8pt,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{codeframe},
+  framesep=5pt,
+  tabsize=2,
+  showstringspaces=false,
+  aboveskip=1em,
+  belowskip=1em
+}
+\lstset{style=pythonstyle}
+
+% ── Liens et références ────────────────────────────────────
+\usepackage[
+  colorlinks=true,
+  linkcolor=ensamprimary!80!black,
+  citecolor=ensamgreen!70!black,
+  urlcolor=ensamaccent!70!black
+]{hyperref}
+
+% ── Figures et flottants ────────────────────────────────────
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{font=small, labelfont=bf, textfont=it}
+
+% ── Acronymes (sans package glossaries pour compatibilité) ─
+\newcommand{\acrshort}[1]{\MakeUppercase{#1}}
+\newcommand{\acrlong}[1]{#1}
+% Définitions pour référence :
+% LLM = Large Language Model
+% RAG = Retrieval-Augmented Generation
+% MCP = Model Context Protocol
+% A2A = Agent-to-Agent Protocol
+% PII = Personally Identifiable Information
+% GDPR = General Data Protection Regulation
+% API = Application Programming Interface
+
+% ── Couleurs du document ────────────────────────────────────
+\definecolor{ensamprimary}{HTML}{4F46E5}
+\definecolor{ensamaccent}{HTML}{06B6D4}
+\definecolor{ensamgreen}{HTML}{10B981}
+\definecolor{ensamwarn}{HTML}{F59E0B}
+\definecolor{ensamred}{HTML}{EF4444}
+\definecolor{ensambg}{HTML}{F1F5F9}
+\definecolor{kernelcolor}{HTML}{7C3AED}
+\definecolor{agentcolor}{HTML}{3B82F6}
+\definecolor{memcolor}{HTML}{10B981}
+\definecolor{ragcolor}{HTML}{F59E0B}
+\definecolor{mcpcolor}{HTML}{EF4444}
+\definecolor{obscolor}{HTML}{8B5CF6}
+\definecolor{frontendcolor}{HTML}{06B6D4}
+
+% ── Encadrés ────────────────────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{definitionbox}[1][]{
+  colback=gray!5,
+  colframe=gray!50,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  breakable
+}
+
+\newtcolorbox{importantbox}[1][]{
+  colback=gray!5,
+  colframe=gray!50,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  breakable
+}
+
+\newtcolorbox{notebox}[1][]{
+  colback=gray!5,
+  colframe=gray!50,
+  fonttitle=\bfseries,
+  title=#1,
+  rounded corners,
+  breakable
+}
+
+% ── En-têtes et pieds de page ───────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{\leftmark}}
+\fancyhead[R]{\small\textit{ENSAM-Agent-OS}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.2pt}
+
+% ── Espacement des listes ───────────────────────────────────
+\usepackage{enumitem}
+\setlist{itemsep=3pt, parsep=2pt}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ────────────────────────────────────────────────────────────
+% PAGE DE GARDE
+% ────────────────────────────────────────────────────────────
+\begin{titlepage}
+\begin{center}
+
+\vspace*{1cm}
+
+% Logo (texte stylisé en remplacement)
+\begin{tikzpicture}
+  \node[draw=ensamprimary, line width=2pt, rounded corners=8pt, inner sep=12pt, fill=ensamprimary!5] {
+    \begin{minipage}{6cm}
+      \centering
+      {\Large\bfseries\color{ensamprimary} ENSAM Meknès}\\[0.2cm]
+      {\small\color{gray} École Nationale Supérieure\\d'Arts et Métiers}
+    \end{minipage}
+  };
+\end{tikzpicture}
+
+\vspace{1.5cm}
+
+\rule{\textwidth}{1.5pt}\\[0.5cm]
+{\Huge\bfseries\color{ensamprimary} ENSAM-Agent-OS}\\[0.4cm]
+{\LARGE Système d'Exploitation Agentique\\pour l'Université}\\[0.3cm]
+{\Large Architecture, Gouvernance et Observabilité}\\[0.5cm]
+\rule{\textwidth}{1.5pt}
+
+\vspace{1cm}
+
+{\large\textbf{Rapport de Projet de Recherche Appliquée}}\\[0.3cm]
+{\large Projet 7 — Intégration Globale}
+
+\vspace{1.5cm}
+
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushleft}
+\textbf{Réalisé par :}\\[0.3cm]
+ \textit{BOUTRID Mourad}\\
+\end{flushleft}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\begin{flushright}
+\textbf{Encadré par :}\\[0.3cm]
+Prof. Hajji Tarik\\[0.5cm]
+\textbf{Module :}\\[0.3cm]
+Représentation et Résolution\\de Problèmes en IA\\
+\end{flushright}
+\end{minipage}
+
+\vfill
+
+\begin{tikzpicture}
+  \node[draw=gray!40, rounded corners=5pt, inner sep=10pt, fill=gray!5] {
+    \begin{minipage}{10cm}
+      \centering
+      {\small\textbf{4\textsuperscript{e} année - IATD-SI}}\\[0.1cm]
+      {\small Année universitaire 2025–2026}
+    \end{minipage}
+  };
+\end{tikzpicture}
+
+\end{center}
+\end{titlepage}
+
+% ────────────────────────────────────────────────────────────
+% PAGE BLANCHE
+% ────────────────────────────────────────────────────────────
+
+% ────────────────────────────────────────────────────────────
+\newpage
+\section*{Résumé}
+\addcontentsline{toc}{section}{Résumé}
+
+\begin{definitionbox}[Résumé en français]
+Cet article présente \textbf{ENSAM-Agent-OS}, un système d'exploitation agentique local conçu pour le contexte universitaire de l'ENSAM Meknès. Face aux limites des solutions monolithiques à base de grands modèles de langage (\acrshort{llm}), nous proposons une architecture modulaire intégrant six agents spécialisés, une mémoire tri-couche (éphémère, sémantique, graphe de connaissances), un pipeline de génération augmentée par récupération (\acrshort{rag}), un registre d'outils conforme au \textit{Model Context Protocol} (\acrshort{mcp}) et un mécanisme de débat inter-agents.
+
+L'innovation centrale réside dans la \textbf{gouvernance} du système : routage hybride local/cloud sensible aux données personnelles (\acrshort{pii}), traçabilité complète des décisions, suivi des coûts en temps réel, conformité \acrshort{gdpr} avec droit à l'oubli, et tableau de bord d'observabilité.
+
+Notre prototype, évalué sur cinq scénarios d'usage réels (tutorat, recherche, administration, charge/coût, gouvernance), démontre qu'un système agentique gouverné peut concilier qualité des réponses, maîtrise des coûts et respect de la vie privée dans un cadre institutionnel.
+\end{definitionbox}
+
+\vspace{0.5cm}
+
+\begin{definitionbox}[Abstract (English)]
+This paper presents \textbf{ENSAM-Agent-OS}, a local agentic operating system designed for the university context of ENSAM Meknès. Facing the limitations of monolithic LLM-based solutions, we propose a modular architecture integrating six specialized agents, a tri-layer memory system (ephemeral, semantic, knowledge graph), a Retrieval-Augmented Generation (RAG) pipeline, a Model Context Protocol (MCP) tool registry, and an inter-agent debate mechanism.
+
+The core innovation lies in \textbf{system governance}: hybrid local/cloud routing with PII detection, complete decision traceability, real-time cost tracking, GDPR compliance with right-to-be-forgotten, and a real-time observability dashboard.
+
+Our prototype, evaluated across five real-world usage scenarios, demonstrates that a governed agentic system can reconcile response quality, cost control, and privacy compliance within an institutional framework.
+\end{definitionbox}
+
+\vspace{0.5cm}
+\noindent\textbf{Mots-clés :} IA agentique, \acrshort{llm}, mémoire, \acrshort{rag}, \acrshort{mcp}, \acrshort{a2a}, gouvernance, observabilité, \acrshort{gdpr}, système multi-agents, université.
+
+
+
+% ────────────────────────────────────────────────────────────
+% TABLES DES MATIÈRES, FIGURES, TABLEAUX
+% ────────────────────────────────────────────────────────────
+\newpage
+\tableofcontents
+
+% ────────────────────────────────────────────────────────────
+% GLOSSAIRE
+% ────────────────────────────────────────────────────────────
+\newpage
+\section*{Glossaire et Acronymes}
+\addcontentsline{toc}{section}{Glossaire et Acronymes}
+
+\begin{longtable}{l p{11cm}}
+\toprule
+\textbf{Terme} & \textbf{Définition} \\
+\midrule
+\endhead
+\textbf{Agent} & Entité logicielle autonome capable de percevoir son environnement, de raisonner et d'agir pour atteindre un objectif défini. \\
+\addlinespace
+\textbf{LLM} & \textit{Large Language Model} — Grand modèle de langage pré-entraîné sur de vastes corpus textuels (GPT, Llama, Qwen, etc.). \\
+\addlinespace
+\textbf{RAG} & \textit{Retrieval-Augmented Generation} — Technique combinant la récupération d'information dans une base documentaire avec la génération par un LLM. \\
+\addlinespace
+\textbf{MCP} & \textit{Model Context Protocol} — Protocole standardisé (Anthropic, 2024) permettant aux LLM d'accéder à des outils et sources de données. \\
+\addlinespace
+\textbf{A2A} & \textit{Agent-to-Agent Protocol} — Protocole standardisé (Google, 2025) pour la communication entre agents autonomes. \\
+\addlinespace
+\textbf{Embedding} & Représentation vectorielle dense d'un texte dans un espace continu, permettant le calcul de similarité sémantique. \\
+\addlinespace
+\textbf{Chunking} & Découpage d'un document en fragments de taille contrôlée pour l'indexation vectorielle. \\
+\addlinespace
+\textbf{PII} & \textit{Personally Identifiable Information} — Données permettant d'identifier une personne (nom, numéro étudiant, email, etc.). \\
+\addlinespace
+\textbf{GDPR / RGPD} & \textit{General Data Protection Regulation} — Règlement européen sur la protection des données personnelles. \\
+\addlinespace
+\textbf{Kernel} & Noyau central du système agentique, responsable de l'orchestration de tous les sous-systèmes. \\
+\addlinespace
+\textbf{Ollama} & Moteur d'inférence LLM local permettant d'exécuter des modèles sur un PC sans connexion cloud. \\
+\addlinespace
+\textbf{Groq} & Service cloud d'inférence LLM à très faible latence basé sur des puces LPU spécialisées. \\
+\addlinespace
+\textbf{ChromaDB} & Base de données vectorielle embarquée, conçue pour le stockage et la recherche d'embeddings. \\
+\addlinespace
+\textbf{NetworkX} & Bibliothèque Python pour la création et la manipulation de graphes complexes. \\
+\addlinespace
+\textbf{FastAPI} & Framework web Python haute performance, basé sur les standards OpenAPI et les types Python. \\
+\addlinespace
+\textbf{OpenTelemetry} & Standard ouvert d'instrumentation pour la collecte de traces, métriques et logs. \\
+\bottomrule
+\end{longtable}
+
+
+% ============================================================
+% SECTION 1 — INTRODUCTION
+% ============================================================
+\section{Introduction}
+\label{chap:introduction}
+
+\subsection{Contexte général}
+
+L'essor des grands modèles de langage (\acrshort{llm}) a profondément transformé le paysage de l'intelligence artificielle appliquée~\cite{kasneci2023chatgpt}. Des systèmes comme ChatGPT (OpenAI), Claude (Anthropic), Gemini (Google) ou Llama (Meta)~\cite{touvron2023llama} sont désormais capables de comprendre et de générer du texte naturel avec une fluidité remarquable, ouvrant des perspectives considérables pour l'automatisation de tâches intellectuelles complexes.
+
+Dans le domaine de l'enseignement supérieur, ces modèles offrent des applications prometteuses : aide à la compréhension de cours, génération d'exercices personnalisés, synthèse de documents scientifiques, assistance à la rédaction, tutorat adaptatif et orientation académique~\cite{kasneci2023chatgpt}. Des établissements du monde entier expérimentent l'intégration de ces outils dans leurs parcours pédagogiques.
+
+Cependant, l'utilisation institutionnelle de ces technologies se heurte à des obstacles fondamentaux que les solutions commerciales ne résolvent pas. La question n'est plus de savoir \textit{si} les \acrshort{llm} sont utiles dans l'éducation, mais \textit{comment} les déployer de manière responsable, contrôlée et conforme aux exigences d'un établissement public.
+
+\subsection{Limites des approches existantes}
+
+Les solutions actuellement disponibles présentent cinq limites majeures pour un déploiement universitaire :
+
+\subsubsection{Absence de gouvernance}
+
+Les systèmes commerciaux (ChatGPT, Copilot, Gemini) fonctionnent comme des boîtes noires. Il est impossible de savoir :
+\begin{itemize}
+  \item Quelles sources ont été utilisées pour générer une réponse (problème de \textit{provenance}).
+  \item Quel raisonnement a conduit à une décision de routage ou de réponse (problème de \textit{traçabilité}).
+  \item Combien coûte réellement chaque interaction (problème de \textit{maîtrise budgétaire}).
+  \item Qui a eu accès aux données échangées (problème de \textit{responsabilité}).
+\end{itemize}
+
+\subsubsection{Confidentialité insuffisante}
+
+Les données étudiantes — notes, parcours académiques, questions personnelles, identifiants institutionnels — transitent par des serveurs tiers sans garantie de conformité avec le Règlement Général sur la Protection des Données (\acrshort{gdpr}). Pour un établissement public marocain, cette absence de contrôle sur les données constitue un risque juridique et éthique majeur.
+
+\subsubsection{Intégration fragmentée}
+
+Les frameworks existants excellent dans un domaine spécifique mais ne proposent pas une pile intégrée. LangChain~\cite{langchain2023} facilite le chaînage de composants, AutoGen~\cite{wu2023autogen} orchestre des conversations multi-agents, CrewAI~\cite{crewai2024} simplifie la définition de rôles. Aucun n'intègre nativement mémoire persistante + \acrshort{rag} + \acrshort{mcp} + observabilité + conformité \acrshort{gdpr} dans un système cohérent.
+
+\subsubsection{Coûts incontrôlés}
+
+L'utilisation intensive d'API cloud (\$0.01--\$0.06 par requête pour GPT-4) peut engendrer des factures mensuelles imprévisibles, incompatibles avec les budgets d'un établissement public. Sans mécanisme de routage intelligent, chaque requête, même triviale, consomme des ressources cloud coûteuses.
+
+\subsubsection{Absence de mémoire institutionnelle}
+
+Les chatbots commerciaux n'ont pas de mémoire persistante au-delà d'une conversation. Chaque nouvelle session repart de zéro, sans contexte sur l'étudiant, ses cours précédents, ses difficultés identifiées ou son parcours. Cette amnésie empêche toute personnalisation à long terme.
+
+\subsection{Problématique de recherche}
+
+Ces constats convergent vers une problématique centrale :
+
+\newpage
+\begin{importantbox}[Problématique]
+\textit{Comment construire une plateforme agentique complète, cohérente et gouvernée, capable de gérer mémoire, outils (\textit{tools}), RAG, MCP et communication inter-agents (A2A) dans un cadre institutionnel universitaire, tout en garantissant traçabilité, maîtrise des coûts et conformité GDPR ?}
+\end{importantbox}
+
+Cette problématique ne relève pas de la simple juxtaposition de composants technologiques, mais bien d'un problème d'\textbf{intégration système} : comment faire coexister ces briques de manière harmonieuse, avec des politiques de gouvernance transversales.
+
+\subsection{Hypothèses de recherche}
+
+Nous formulons une hypothèse principale décomposée en quatre sous-hypothèses testables :
+
+\begin{definitionbox}[Hypothèse principale]
+\textit{Un système agentique modulaire, organisé comme un système d'exploitation (kernel, registre de services, politique mémoire, observabilité), permet de concilier qualité des réponses, traçabilité des décisions, contrôle des coûts et conformité GDPR dans un contexte universitaire.}
+\end{definitionbox}
+
+\begin{description}[leftmargin=2cm]
+  \item[\textbf{H1 — Modularité}] Une architecture en couches (kernel $\rightarrow$ agents $\rightarrow$ services) permet d'ajouter ou de remplacer des composants sans affecter le reste du système.
+  \item[\textbf{H2 — Qualité}] L'intégration mémoire + RAG + outils améliore la pertinence des réponses par rapport à un \acrshort{llm} nu (sans contexte).
+  \item[\textbf{H3 — Coût}] Le routage hybride local/cloud réduit les coûts d'au moins 50\% sans dégradation significative de la qualité perçue.
+  \item[\textbf{H4 — Gouvernance}] La traçabilité, l'audit et la conformité \acrshort{gdpr} sont réalisables avec un overhead de latence inférieur à 10\%.
+\end{description}
+
+\subsection{Contributions}
+
+Ce travail apporte les contributions suivantes :
+
+\begin{enumerate}
+  \item \textbf{Architecture AgenticKernel} : un noyau central orchestrant agents, mémoire, RAG, outils et observabilité selon le modèle d'un système d'exploitation — inspiré des travaux de Packer et al. sur MemGPT~\cite{packer2023memgpt}.
+
+  \item \textbf{Routage LLM hybride PII-aware} : un mécanisme de routage intelligent entre inférence locale (Ollama) et cloud (Groq), avec détection automatique de données personnelles via expressions régulières adaptées au contexte marocain (CNE, CIN, etc.).
+
+  \item \textbf{Mémoire tri-couche} : intégration de trois niveaux de mémoire (éphémère avec TTL, sémantique via ChromaDB, graphe de connaissances via NetworkX) avec une façade unifiée et un mécanisme GDPR transversal.
+
+  \item \textbf{Gouvernance intégrée} : traçabilité complète des décisions (audit), suivi des coûts par requête, métriques de performance en temps réel, et droit à l'oubli conforme à l'article 17 du RGPD — le tout exposé via un tableau de bord interactif.
+
+  \item \textbf{Prototype fonctionnel} : un système complet (backend FastAPI + frontend Next.js) déployable localement, évalué sur cinq scénarios d'usage réels issus du contexte ENSAM Meknès.
+\end{enumerate}
+
+\subsection{Organisation du rapport}
+
+Le présent rapport est organisé en sept chapitres. Le chapitre~\ref{chap:etat_art} dresse un état de l'art des systèmes agentiques, de la mémoire, du RAG, des protocoles MCP/A2A et de l'observabilité. Le chapitre~\ref{chap:methodologie} détaille notre méthodologie et notre protocole expérimental. Le chapitre~\ref{chap:implementation} décrit l'implémentation détaillée de chaque composant du système. Le chapitre~\ref{chap:experimentation} présente les scénarios d'évaluation et les jeux de données. Le chapitre~\ref{chap:resultats} analyse les résultats obtenus et les compromis observés. Enfin, le chapitre~\ref{chap:conclusion} synthétise nos apports et ouvre des perspectives de recherche et de développement.
+
+
+% ============================================================
+% SECTION 2 — ÉTAT DE L'ART
+% ============================================================
+\section{État de l'art}
+\label{chap:etat_art}
+
+Ce chapitre présente une synthèse des concepts, travaux et technologies qui constituent le socle de notre système. Nous couvrons successivement les systèmes multi-agents, le RAG, la mémoire, les protocoles MCP et A2A, l'observabilité, et le positionnement de notre contribution.
+
+\subsection{Systèmes multi-agents à base de LLM}
+
+L'IA agentique représente un changement de paradigme où les \acrshort{llm} passent du rôle de générateurs de texte passifs à celui d'\emph{agents autonomes} capables de percevoir, raisonner, planifier et agir~\cite{xi2023rise, wang2024survey}. Un agent, au sens de l'IA, est une entité qui :
+
+\begin{enumerate}
+  \item \textbf{Perçoit} son environnement (requêtes utilisateur, contexte, données).
+  \item \textbf{Raisonne} sur la meilleure action à entreprendre (Chain-of-Thought~\cite{wei2022cot}, ReAct~\cite{yao2023react}).
+  \item \textbf{Agit} en utilisant des outils, en interrogeant des bases de données ou en communiquant avec d'autres agents.
+  \item \textbf{Mémorise} les interactions pour améliorer ses réponses futures.
+\end{enumerate}
+
+\subsubsection{Frameworks multi-agents existants}
+
+Plusieurs frameworks ont émergé pour orchestrer des systèmes multi-agents :
+
+\textbf{AutoGen}~\cite{wu2023autogen} (Microsoft Research, 2023) propose des conversations multi-agents avec des patterns programmables (séquentiel, groupe, hiérarchique). Sa force réside dans la flexibilité des topologies de conversation et le support de l'intervention humaine (\textit{human-in-the-loop}). Cependant, AutoGen ne fournit ni mémoire persistante native, ni gouvernance des coûts, ni conformité GDPR.
+
+\textbf{MetaGPT}~\cite{hong2023metagpt} (2023) modélise les agents comme des rôles professionnels (architecte, développeur, testeur) avec des SOP (\textit{Standard Operating Procedures}) qui structurent leur collaboration. L'approche est puissante pour le développement logiciel mais peu adaptable à d'autres domaines comme l'éducation.
+
+\textbf{CrewAI}~\cite{crewai2024} (2024) simplifie la création d'équipes d'agents avec des rôles, objectifs et outils définis déclarativement. Son \acrshort{api} intuitive a favorisé une adoption rapide. Cependant, CrewAI repose entièrement sur des API cloud sans option de routage local.
+
+\textbf{LangGraph}~\cite{langgraph2024} (LangChain, 2024) modélise les workflows agentiques comme des graphes d'états avec persistance, permettant des flux complexes avec boucles, points de contrôle et intervention humaine. C'est le framework le plus proche de notre approche architecturale, mais il ne fournit pas de gouvernance intégrée, de suivi des coûts natif, ni de conformité GDPR.
+
+\begin{table}[H]
+\centering
+\caption{Comparaison détaillée des frameworks multi-agents existants}
+\label{tab:frameworks}
+\small
+\begin{tabularx}{\textwidth}{l *{7}{>{\centering\arraybackslash}X}}
+\toprule
+\textbf{Critère} & \rotatebox{70}{\textbf{AutoGen}} & \rotatebox{70}{\textbf{MetaGPT}} & \rotatebox{70}{\textbf{CrewAI}} & \rotatebox{70}{\textbf{LangGraph}} & \rotatebox{70}{\textbf{LangChain}} & \rotatebox{70}{\textbf{ENSAM-OS}} \\
+\midrule
+Multi-agents       & \checkmark & \checkmark & \checkmark & \checkmark & $\sim$     & \checkmark \\
+Mémoire persistante & $\times$  & $\times$   & $\sim$     & \checkmark & $\sim$     & \checkmark \\
+RAG intégré         & $\sim$    & $\times$   & \checkmark & \checkmark & \checkmark & \checkmark \\
+Tools / MCP         & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Observabilité       & $\times$  & $\times$   & $\sim$     & $\sim$     & $\sim$     & \checkmark \\
+Suivi des coûts     & $\times$  & $\times$   & $\times$   & $\times$   & $\sim$     & \checkmark \\
+Routage local/cloud & $\times$  & $\times$   & $\times$   & $\times$   & $\times$   & \checkmark \\
+GDPR natif          & $\times$  & $\times$   & $\times$   & $\times$   & $\times$   & \checkmark \\
+Tableau de bord     & $\times$  & $\times$   & $\times$   & $\sim$     & $\sim$     & \checkmark \\
+\bottomrule
+\end{tabularx}
+\vspace{0.2cm}
+{\footnotesize \checkmark~= support natif complet \quad $\sim$~= partiel ou via plugin \quad $\times$~= absent}
+\end{table}
+
+\subsubsection{Paradigmes de raisonnement agentique}
+
+Les agents s'appuient sur des paradigmes de raisonnement pour structurer leurs actions :
+
+\textbf{Chain-of-Thought (CoT)}~\cite{wei2022cot} incite le modèle à décomposer son raisonnement en étapes explicites avant de produire une réponse finale. Cette technique améliore significativement les performances sur les tâches de raisonnement mathématique et logique.
+
+\textbf{ReAct}~\cite{yao2023react} (\textit{Reasoning + Acting}) alterne entre des phases de raisonnement textuel et des actions concrètes (appels d'outils, recherches). Ce paradigme est fondamental pour les agents qui interagissent avec des environnements externes.
+
+\textbf{Toolformer}~\cite{schick2023toolformer} démontre que les \acrshort{llm} peuvent apprendre de manière auto-supervisée quand et comment utiliser des outils (calculatrice, API de recherche, traducteur). Cette capacité est au c\oe{}ur de l'intégration d'outils dans les agents.
+
+\subsection{Génération augmentée par récupération (RAG)}
+\label{sec:rag_etat_art}
+
+\subsubsection{Principe fondamental}
+
+Le \acrshort{rag}~\cite{lewis2020rag} combine deux mécanismes complémentaires : la \textbf{récupération} (\textit{retrieval}) d'informations pertinentes dans une base documentaire, et la \textbf{génération} d'une réponse par un \acrshort{llm} en s'appuyant sur les documents récupérés. Cette approche résout deux problèmes majeurs des \acrshort{llm} :
+
+\begin{itemize}
+  \item Les \textbf{hallucinations} : en fondant la réponse sur des sources vérifiables.
+  \item La \textbf{péremption} des connaissances : en permettant l'accès à des documents mis à jour sans ré-entraînement du modèle.
+\end{itemize}
+
+\subsubsection{Évolution des architectures RAG}
+
+Gao et al.~\cite{gao2023ragsurvey} et Fan et al.~\cite{fan2024survey} distinguent trois générations d'architectures RAG :
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=0.5cm and 1cm,
+  every node/.style={font=\small},
+  gen/.style={
+    draw, rounded corners=5pt, minimum height=2cm,
+    minimum width=4cm, align=center, thick, fill=gray!8, draw=gray!60
+  },
+  arrow/.style={-{Stealth[length=2.5mm]}, ultra thick, color=gray!50}
+]
+
+\node[gen] (naive) {
+  \textbf{Naive RAG}\\[0.2cm]
+  Query $\rightarrow$ Retrieve\\
+  $\rightarrow$ Generate\\[0.1cm]
+  {\footnotesize Simple mais bruyant}
+};
+
+\node[gen, right=1.2cm of naive] (advanced) {
+  \textbf{Advanced RAG}\\[0.2cm]
+  Pre-retrieval\\+ Retrieval\\+ Post-retrieval\\[0.1cm]
+  {\footnotesize Re-ranking, rewriting}
+};
+
+\node[gen, right=1.2cm of advanced] (modular) {
+  \textbf{Modular RAG}\\[0.2cm]
+  Modules\\interchangeables\\Routing adaptatif\\[0.1cm]
+  {\footnotesize \textbf{Notre approche}}
+};
+
+\draw[arrow] (naive) -- (advanced);
+\draw[arrow] (advanced) -- (modular);
+
+\end{tikzpicture}
+\caption{Évolution des architectures RAG~\cite{gao2023ragsurvey}}
+\label{fig:rag_evolution}
+\end{figure}
+
+Notre implémentation s'inscrit dans la catégorie \textbf{Modular RAG} : le pipeline est composé de modules indépendants (parseur, chunker, embedder, retriever, générateur) qui peuvent être remplacés ou configurés indépendamment.
+
+\subsection{Mémoire dans les systèmes agentiques}
+\label{sec:memory_etat_art}
+
+\subsubsection{Nécessité de la mémoire}
+
+Sans mémoire, un agent ne peut ni apprendre de ses interactions passées, ni personnaliser ses réponses, ni maintenir la cohérence d'une conversation longue. La mémoire est ce qui transforme un chatbot sans état en un assistant véritablement intelligent.
+
+\subsubsection{Taxonomie des mémoires agentiques}
+
+Zhang et al.~\cite{zhang2024survey} catégorisent les mémoires agentiques selon trois dimensions :
+
+\begin{table}[H]
+\centering
+\caption{Taxonomie des mémoires agentiques~\cite{zhang2024survey}}
+\label{tab:memory_taxonomy}
+\small
+\begin{tabularx}{\textwidth}{l l X l}
+\toprule
+\textbf{Type} & \textbf{Durée} & \textbf{Mécanisme} & \textbf{Analogie humaine} \\
+\midrule
+Court terme & Session & Buffer de conversation, fenêtre de contexte & Mémoire de travail \\
+Long terme — sémantique & Persistent & Base vectorielle, embeddings & Mémoire déclarative \\
+Long terme — épisodique & Persistent & Événements datés, séquences & Mémoire épisodique \\
+Long terme — procédurale & Persistent & Règles, politiques, habitudes & Mémoire procédurale \\
+Graphe & Persistent & Entités, relations, ontologies & Mémoire sémantique \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{MemGPT et l'analogie système d'exploitation}
+
+Packer et al.~\cite{packer2023memgpt} proposent avec MemGPT une analogie fondamentale avec la gestion mémoire des systèmes d'exploitation : la fenêtre de contexte du \acrshort{llm} est assimilée à la mémoire principale (RAM) — limitée mais rapide — tandis qu'un stockage externe joue le rôle de mémoire secondaire (disque) — illimitée mais plus lente. Un mécanisme de « pagination » gère les transferts entre les deux niveaux.
+
+Cette analogie inspire directement notre architecture, que nous étendons avec un troisième niveau : le \textbf{graphe de connaissances}, qui capture les relations structurées entre entités (étudiants, cours, documents, agents) et enrichit le contexte au-delà de la simple similarité textuelle.
+
+\subsubsection{Generative Agents}
+
+Park et al.~\cite{park2023generative} ont démontré avec les \textit{Generative Agents} que la combinaison mémoire épisodique + mécanisme de réflexion produit des comportements émergents réalistes. Leur architecture comprend un flux de mémoire (observations horodatées), un mécanisme de récupération (par pertinence, récence et importance), et un module de réflexion (synthèse de haut niveau). Notre mémoire sémantique s'inspire de leur mécanisme de récupération par pertinence.
+
+\subsection{Protocoles de communication}
+
+\subsubsection{Model Context Protocol (MCP)}
+
+Le \textbf{Model Context Protocol}~\cite{anthropic2024mcp}, proposé par Anthropic en novembre 2024, standardise la manière dont les \acrshort{llm} accèdent à des outils et des sources de données contextuelles. Le protocole définit :
+
+\begin{itemize}
+  \item \textbf{Tools} : fonctions invocables par le modèle (ex : \texttt{schedule\_lookup}, \texttt{web\_search}).
+  \item \textbf{Resources} : sources de données lisibles (fichiers, bases de données).
+  \item \textbf{Prompts} : templates de prompts pré-configurés.
+  \item \textbf{Transport} : communication via stdio ou HTTP/SSE.
+\end{itemize}
+
+L'adoption du MCP s'accélère : les principaux IDE (VS Code, Cursor, Windsurf) et frameworks (LangChain, CrewAI) l'intègrent progressivement. Notre système implémente un sous-ensemble du protocole axé sur la découverte et l'exécution d'outils avec des niveaux de sécurité.
+
+\subsubsection{Agent-to-Agent Protocol (A2A)}
+
+Le protocole \textbf{Agent-to-Agent}~\cite{google2025a2a}, proposé par Google en avril 2025, standardise la communication entre agents autonomes via :
+
+\begin{itemize}
+  \item \textbf{Agent Cards} : documents JSON décrivant les capacités, compétences et endpoints d'un agent.
+  \item \textbf{Task Protocol} : mécanisme de délégation de tâches entre agents avec suivi d'état (submitted, working, completed, failed).
+  \item \textbf{Messages} : échanges structurés avec pièces jointes typées.
+\end{itemize}
+
+Dans notre système, la communication inter-agents s'effectue principalement via deux mécanismes : (1) le \textbf{routage dynamique} du kernel, qui délègue les requêtes à l'agent spécialisé approprié en fonction de l'intention détectée, et (2) le \textbf{DebateEngine}, qui orchestre des confrontations argumentées multi-rounds entre perspectives opposées. Ces mécanismes constituent une forme de communication A2A interne, bien qu'ils n'implémentent pas le protocole formel de Google.
+
+\subsection{Observabilité des systèmes LLM}
+
+L'observabilité — capacité à comprendre l'état interne d'un système à partir de ses sorties — est un domaine émergent pour les systèmes à base de \acrshort{llm}.
+
+\textbf{LangSmith}~\cite{langsmith2024} (LangChain) propose du tracing de chaînes, de l'évaluation automatique et du monitoring. Cependant, il est lié à l'écosystème LangChain et ne fournit pas de suivi des coûts par requête ni de conformité GDPR.
+
+\textbf{OpenTelemetry}~\cite{opentelemetry2024} fournit un standard industriel pour l'instrumentation (traces, métriques, logs) mais n'est pas spécialisé pour les \acrshort{llm}. L'adaptation à un système agentique nécessite un travail d'intégration significatif.
+
+\begin{notebox}[Positionnement de notre contribution]
+Aucune solution existante n'intègre nativement dans un même système :
+\begin{itemize}
+  \item Suivi des coûts \textbf{par requête} avec calcul d'économies
+  \item Routage \textbf{PII-aware} entre local et cloud
+  \item Audit trail avec \textbf{provenance des réponses}
+  \item Conformité GDPR avec \textbf{droit à l'oubli}
+  \item Tableau de bord d'observabilité \textbf{temps réel}
+\end{itemize}
+C'est précisément ce créneau que notre système occupe.
+\end{notebox}
+
+
+% ============================================================
+% SECTION 3 — MÉTHODOLOGIE
+% ============================================================
+\section{Méthodologie}
+\label{chap:methodologie}
+
+\subsection{Approche de conception}
+
+Notre approche de conception suit le modèle itératif \textit{Design Science Research} : (1) identification du problème, (2) définition des objectifs, (3) conception de l'artefact, (4) développement, (5) évaluation, (6) communication. Le système a été développé en sprints de deux semaines, chaque sprint ajoutant une brique de la pile complète.
+
+\subsection{Architecture proposée — Vue d'ensemble}
+
+L'architecture d'ENSAM-Agent-OS s'organise en cinq couches horizontales, traversées par un axe d'observabilité vertical :
+
+\begin{figure}[H]
+\centering
+
+\begin{tikzpicture}[
+    font=\footnotesize,
+    node distance=0.35cm,
+    layerbox/.style={
+        draw,
+        rounded corners=3pt,
+        thick,
+        align=center,
+        minimum height=1.1cm,
+        text width=12.5cm,
+        fill=gray!5
+    },
+    smallbox/.style={
+        draw,
+        rounded corners=3pt,
+        thick,
+        minimum width=1.7cm,
+        minimum height=0.7cm,
+        align=center,
+        font=\scriptsize,
+        fill=white
+    },
+    servicebox/.style={
+        draw,
+        rounded corners=3pt,
+        thick,
+        minimum width=3.6cm,
+        minimum height=1cm,
+        align=center,
+        font=\scriptsize,
+        fill=gray!5
+    },
+    providerbox/.style={
+        draw,
+        rounded corners=3pt,
+        thick,
+        minimum width=5cm,
+        minimum height=0.8cm,
+        align=center,
+        font=\scriptsize
+    },
+    arrow/.style={
+        -{Stealth[length=2mm]},
+        thick,
+        draw=gray!60
+    }
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 5
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[layerbox] (frontend) {
+\textbf{Couche 5 --- Interface Utilisateur (Next.js / React)}\\
+{\scriptsize Dashboard $\cdot$ Chat $\cdot$ Knowledge Base $\cdot$ Privacy $\cdot$ Settings}
+};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[layerbox, below=of frontend] (api) {
+\textbf{Couche 4 --- API REST (FastAPI)}\\
+{\scriptsize Routes $\cdot$ Middleware $\cdot$ Schémas Pydantic $\cdot$ CORS}
+};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[layerbox, fill=gray!10, below=of api] (kernel) {
+\textbf{Couche 3 --- AgenticKernel (Orchestrateur)}\\
+{\scriptsize Cycle de vie requête $\cdot$ Injection dépendances $\cdot$ Event Bus $\cdot$ Routage d'intention}
+};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[font=\scriptsize\bfseries, below=0.7cm of kernel]
+(agentslabel)
+{Couche 2 --- Agents Spécialisés (BaseAgent)};
+
+\node[smallbox, below=0.25cm of agentslabel, xshift=-4.5cm] (tutor)
+{Tutor};
+
+\node[smallbox, right=0.15cm of tutor] (research)
+{Research};
+
+\node[smallbox, right=0.15cm of research] (orientation)
+{Orientation};
+
+\node[smallbox, right=0.15cm of orientation] (project)
+{Project};
+
+\node[smallbox, right=0.15cm of project] (admin)
+{Admin};
+
+\node[smallbox, right=0.15cm of admin] (debate)
+{Debate};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[font=\scriptsize\bfseries, below=0.7cm of orientation]
+(servicelabel)
+{Couche 1 --- Services Fondamentaux};
+
+\node[servicebox, below=0.25cm of servicelabel, xshift=-3.8cm]
+(memory)
+{
+\textbf{Mémoire}\\
+{\tiny Éphémère + Sémantique + Graphe}
+};
+
+\node[servicebox, right=0.25cm of memory]
+(rag)
+{
+\textbf{RAG Pipeline}\\
+{\tiny Ingestion + Retrieval + Embedding}
+};
+
+\node[servicebox, right=0.25cm of rag]
+(mcp)
+{
+\textbf{MCP Registry}\\
+{\tiny Schedule + Grades + Documents}
+};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Couche 0
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\node[font=\scriptsize\bfseries, below=0.7cm of rag]
+(providerlabel)
+{Couche 0 --- Providers LLM (Model Router)};
+
+\node[providerbox, below=0.25cm of providerlabel, xshift=-2.8cm]
+(ollama)
+{
+\textbf{Ollama} (Local) --- Qwen2.5
+};
+
+\node[providerbox, right=0.4cm of ollama]
+(groq)
+{
+\textbf{Groq API} (Cloud) --- Llama-3
+};
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Flux principal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\draw[arrow] (frontend) -- (api);
+\draw[arrow] (api) -- (kernel);
+
+\draw[arrow] (kernel.south) -- ++(0,-0.3) -| (tutor.north);
+\draw[arrow] (kernel.south) -- ++(0,-0.3) -| (orientation.north);
+\draw[arrow] (kernel.south) -- ++(0,-0.3) -| (admin.north);
+
+\draw[arrow] (tutor.south) -- (memory.north);
+\draw[arrow] (orientation.south) -- (rag.north);
+\draw[arrow] (admin.south) -- (mcp.north);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Observabilité transversale
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{tikzpicture}
+
+\caption{
+Architecture en couches d'ENSAM-Agent-OS.
+L'observabilité (audit, métriques, coûts et conformité GDPR)
+constitue une préoccupation transversale à l'ensemble des couches.
+}
+\label{fig:architecture_layers}
+
+\end{figure}
+
+
+\subsection{Choix technologiques}
+
+Chaque brique technologique a été sélectionnée selon trois critères : (1) adéquation fonctionnelle, (2) légèreté et déployabilité locale, (3) maturité et communauté active.
+
+\begin{table}[H]
+\centering
+\caption{Pile technologique et justifications détaillées}
+\label{tab:techstack}
+\small
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{Couche} & \textbf{Composant} & \textbf{Technologie} & \textbf{Justification} \\
+\midrule
+Backend & Framework web & FastAPI & Async natif, validation Pydantic, OpenAPI auto, performances élevées \\
+Backend & LLM local & Ollama + Qwen2.5 & Inférence locale, 0 coût, confidentialité totale, support multilingue FR/AR \\
+Backend & LLM cloud & Groq API & Latence $<$500ms grâce aux puces LPU, modèles Llama-3/Mixtral \\
+Backend & Base vectorielle & ChromaDB & Embarquée, sans serveur, HNSW pour recherche rapide \\
+Backend & Graphe & NetworkX & Pur Python, sérialisation JSON, sans dépendance \\
+Backend & Classification & Sentence-BERT & Multilingue, rapide ($\sim$5ms CPU), pas d'appel LLM pour le routage \\
+Backend & Chunking & LangChain Splitter & RecursiveCharacterTextSplitter robuste et paramétrable \\
+Backend & Observabilité & OpenTelemetry & Standard industriel CNCF, extensible, vendor-neutral \\
+\midrule
+Frontend & Framework & Next.js 16 & SSR/CSR, App Router, écosystème riche \\
+Frontend & UI & React 19 + Tailwind & Composants réactifs, styling utilitaire \\
+Frontend & Graphiques & Recharts & Graphiques déclaratifs pour le dashboard \\
+Frontend & Graphe & ReactFlow & Visualisation interactive du graphe de connaissances \\
+Frontend & État & TanStack Query & Gestion du cache serveur, refetching automatique \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Protocole expérimental}
+
+\subsubsection{Scénarios d'évaluation}
+
+L'évaluation s'effectue selon cinq scénarios couvrant les cas d'utilisation principaux du contexte universitaire :
+
+\begin{table}[H]
+\centering
+\caption{Scénarios d'évaluation et métriques associées}
+\label{tab:scenarios}
+\small
+\begin{tabularx}{\textwidth}{c l X l}
+\toprule
+\textbf{\#} & \textbf{Scénario} & \textbf{Objectif} & \textbf{Métriques clés} \\
+\midrule
+S1 & Tutorat & Qualité pédagogique des réponses et pertinence RAG & Precision@k, score RAG \\
+S2 & Recherche & Recherche documentaire multi-sources & Recall, diversité sources \\
+S3 & Administration & Exactitude des outils MCP (notes, EDT) & Exactitude, latence outil \\
+S4 & Charge/Coût & Distribution routage et coût sous charge & Coût/req, latence p95 \\
+S5 & Gouvernance & Conformité GDPR, audit trail & Complétude effacement \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Métriques de performance}
+
+\begin{itemize}
+  \item \textbf{Latence} : temps total de traitement d'une requête (p50, p95, p99).
+  \item \textbf{Coût} : coût en dollars par requête, calculé selon le provider et les tokens consommés.
+  \item \textbf{Tokens} : nombre de tokens d'entrée et de sortie par requête.
+  \item \textbf{Taux de cache} : pourcentage de requêtes servies depuis un cache (mémoire ou embedding).
+  \item \textbf{Précision de classification} : pourcentage de requêtes routées vers le bon agent.
+  \item \textbf{Score de pertinence RAG} : score cosinus moyen des chunks récupérés (0 à 1).
+  \item \textbf{Overhead de gouvernance} : latence additionnelle due à l'audit, au tracking et à la journalisation.
+\end{itemize}
+
+
+% ============================================================
+% SECTION 4 — IMPLÉMENTATION
+% ============================================================
+\section{Implémentation}
+\label{chap:implementation}
+
+Ce chapitre détaille l'implémentation de chaque composant du système. La structure du code source suit l'organisation suivante :
+
+\begin{lstlisting}[style=jsonstyle, caption={Structure du dépôt de code}, label={lst:structure}]
+ENSAM-Agent-OS/
+  backend/
+    app/
+      core/          # Kernel, routing, LLM, events
+      agents/        # Agents specialises + classifier
+      memory/        # 3 couches + GDPR
+      rag/           # Pipeline RAG complet
+      mcp/           # Registry + serveurs MCP
+      observability/ # Audit, couts, metriques, telemetry
+      api/           # Routes FastAPI + middleware
+    data/            # Documents pour le RAG
+    pyproject.toml
+  frontend/
+    src/app/         # Pages Next.js
+    src/components/  # Composants React
+    src/lib/         # Client API + providers
+  article/           # Ce rapport
+  run.bat            # Script de demarrage
+\end{lstlisting}
+
+\subsection{Le kernel agentique (\texttt{AgenticKernel})}
+
+Le c\oe{}ur du système est la classe \texttt{AgentKernel}, inspirée de l'analogie avec un noyau de système d'exploitation~\cite{packer2023memgpt}. Le kernel est responsable de :
+
+\begin{enumerate}
+  \item \textbf{Initialisation} : instanciation et câblage de tous les sous-systèmes au démarrage.
+  \item \textbf{Orchestration} : coordination du pipeline de traitement de chaque requête.
+  \item \textbf{Cycle de vie} : gestion du démarrage (\texttt{startup}) et de l'arrêt (\texttt{shutdown}) propres.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Pipeline de traitement du kernel (simplifié)}, label={lst:kernel}]
+class AgentKernel:
+    """Noyau central du systeme agentique."""
+
+    def __init__(self):
+        self.llm_manager: LLMManager = None
+        self.router: ModelRouter = None
+        self.memory: MemoryManager = None
+        self.rag: RAGPipeline = None
+        self.mcp: MCPRegistry = None
+        self.cost_tracker: CostTracker = None
+        self.audit_logger: AuditLogger = None
+        self.event_bus: EventBus = None
+
+    async def process_request(
+        self, message: str, session_id: str, user_id: str
+    ) -> dict:
+        context = RequestContext(
+            session_id=session_id,
+            user_id=user_id,
+            request_id=str(uuid.uuid4())
+        )
+        try:
+            # 1. Charger l'historique de session
+            history = await self.memory.get_history(session_id)
+
+            # 2. Determiner le routage LLM (local vs cloud)
+            routing = self.router.analyze(message)
+
+            # 3. Generer la reponse via le LLM selectionne
+            response = await self.llm_manager.generate(
+                prompt=message,
+                history=history,
+                target=routing.target
+            )
+
+            # 4. Sauvegarder dans la memoire
+            await self.memory.save(session_id, message, response)
+
+            # 5. Enregistrer le cout
+            self.cost_tracker.record(routing, response)
+
+            # 6. Logger dans l'audit trail
+            self.audit_logger.log_request(context, routing, response)
+
+            # 7. Publier l'evenement
+            await self.event_bus.publish("response_generated", {...})
+
+            return {"response": response.text, "trace": context}
+
+        except Exception as e:
+            self.audit_logger.log_error(context, e)
+            raise
+\end{lstlisting}
+
+\subsubsection{Bus d'événements (\texttt{EventBus})}
+
+Le kernel utilise un bus d'événements asynchrone pour découpler les composants. Douze types d'événements sont définis :
+
+\begin{table}[H]
+\centering
+\caption{Types d'événements du système}
+\label{tab:events}
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Événement} & \textbf{Description} & \textbf{Émetteur} \\
+\midrule
+\texttt{message\_received} & Nouvelle requête utilisateur & API \\
+\texttt{agent\_selected} & Agent choisi par le classifier & Kernel \\
+\texttt{response\_generated} & Réponse LLM produite & Agent \\
+\texttt{memory\_stored} & Données sauvegardées en mémoire & MemoryManager \\
+\texttt{rag\_retrieved} & Documents RAG récupérés & RAGPipeline \\
+\texttt{tool\_called} & Outil MCP invoqué & MCPClient \\
+\texttt{cost\_recorded} & Coût enregistré & CostTracker \\
+\texttt{error\_occurred} & Erreur survenue & Tout composant \\
+\texttt{cost\_alert} & Seuil de budget dépassé & CostTracker \\
+\texttt{pii\_detected} & Données personnelles détectées & ModelRouter \\
+\texttt{gdpr\_erasure} & Effacement GDPR exécuté & GDPRManager \\
+\texttt{agent\_registered} & Nouvel agent enregistré & EventBus \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Système d'agents spécialisés}
+
+\subsubsection{Architecture BaseAgent}
+
+Tous les agents héritent d'une classe abstraite \texttt{BaseAgent} qui implémente le patron \textit{Template Method}. Ce patron définit le squelette algorithmique du traitement d'une requête tout en déléguant les spécificités (prompt système, sélection d'outils, politique RAG) aux sous-classes.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=0.4cm,
+  every node/.style={font=\small},
+  step/.style={
+    draw, rounded corners=3pt, minimum height=0.8cm,
+    minimum width=4cm, align=center, thick, fill=gray!8, draw=gray!50
+  },
+  arrow/.style={-{Stealth[length=2mm]}, thick, color=gray!60},
+  decision/.style={
+    draw, diamond, aspect=2.2, minimum width=2cm,
+    align=center, thick, fill=gray!8, draw=gray!50, inner sep=2pt, font=\footnotesize
+  }
+]
+
+\node[step] (req) {1. Réception requête + contexte};
+\node[step] (prompt) [below=of req] {2. Construction prompt système};
+\node[step] (history) [below=of prompt] {3. Chargement historique (10 derniers msgs)};
+\node[decision] (webq) [below=0.5cm of history] {Web\\search ?};
+\node[step] (web) [right=1.5cm of webq] {4. Recherche DuckDuckGo};
+\node[decision] (ragq) [below=0.5cm of webq] {RAG ?};
+\node[step] (rag) [right=1.5cm of ragq] {5. Récupération RAG (top-5)};
+\node[decision] (toolq) [below=0.5cm of ragq] {Tools ?};
+\node[step] (tools) [right=1.5cm of toolq] {6. Appel outils MCP};
+\node[step] (pii) [below=0.5cm of toolq] {7. Analyse PII $\rightarrow$ routage local/cloud};
+\node[step] (gen) [below=of pii] {8. Génération LLM (streaming)};
+\node[step] (audit) [below=of gen] {9. Audit + Événement};
+\node[step] (save) [below=of audit] {10. Sauvegarde mémoire tri-couche};
+\node[step] (resp) [below=of save] {11. Réponse (texte + sources + trace)};
+
+\draw[arrow] (req) -- (prompt);
+\draw[arrow] (prompt) -- (history);
+\draw[arrow] (history) -- (webq);
+\draw[arrow] (webq) -- node[above, font=\tiny] {Oui} (web);
+\draw[arrow] (webq) -- node[left, font=\tiny] {Non} (ragq);
+\draw[arrow] (web.south) |- (ragq);
+\draw[arrow] (ragq) -- node[above, font=\tiny] {Oui} (rag);
+\draw[arrow] (ragq) -- node[left, font=\tiny] {Non} (toolq);
+\draw[arrow] (rag.south) |- (toolq);
+\draw[arrow] (toolq) -- node[above, font=\tiny] {Oui} (tools);
+\draw[arrow] (toolq) -- node[left, font=\tiny] {Non} (pii);
+\draw[arrow] (tools.south) |- (pii);
+\draw[arrow] (pii) -- (gen);
+\draw[arrow] (gen) -- (audit);
+\draw[arrow] (audit) -- (save);
+\draw[arrow] (save) -- (resp);
+
+\end{tikzpicture}
+\caption{Pipeline complet de traitement d'une requête par un agent}
+\label{fig:agent_pipeline}
+\end{figure}
+
+\subsubsection{Classification d'intention}
+
+La classification utilise un modèle d'embeddings multilingue \texttt{paraphrase-multilingual-MiniLM-L12-v2}~\cite{reimers2019sentence} chargé localement. Le processus se déroule en quatre étapes :
+
+\begin{enumerate}
+  \item \textbf{Enregistrement} : chaque agent fournit 6 à 10 phrases exemplaires bilingues (FR/EN) lors de l'initialisation.
+  \item \textbf{Pré-calcul} : les embeddings de tous les exemplaires sont calculés et stockés en mémoire (matrice $N_{agents} \times N_{exemplars} \times 384$).
+  \item \textbf{Classification} : pour chaque requête, son embedding est comparé à tous les exemplaires par similarité cosinus :
+  \begin{equation}
+    \text{sim}(q, e) = \frac{q \cdot e}{\|q\| \cdot \|e\|}
+    \label{eq:cosine}
+  \end{equation}
+  \item \textbf{Décision} : l'agent ayant le score maximal est sélectionné si $\max(\text{sim}) > 0.35$ ; sinon, un fallback par mots-clés est tenté.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Classifieur d'intention par embeddings}, label={lst:classifier}]
+class IntentClassifier:
+    """Classification par embeddings multilingues."""
+
+    def __init__(self):
+        self.model = None  # Lazy loading
+        self.agent_embeddings: dict[str, np.ndarray] = {}
+
+    def _load_model(self):
+        """Chargement paresseux du modele."""
+        from transformers import AutoTokenizer, AutoModel
+        name = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+        self.tokenizer = AutoTokenizer.from_pretrained(name)
+        self.model = AutoModel.from_pretrained(name)
+
+    def register_agent(self, agent_id: str, exemplars: list[str]):
+        """Pre-calcule les embeddings exemplaires."""
+        embeddings = [self._embed(text) for text in exemplars]
+        self.agent_embeddings[agent_id] = np.stack(embeddings)
+
+    def classify(self, query: str) -> ClassificationResult:
+        """Classifie une requete par similarite cosinus."""
+        query_emb = self._embed(query)
+        best_agent, best_score = None, -1.0
+
+        for agent_id, exemplar_embs in self.agent_embeddings.items():
+            scores = cosine_similarity(query_emb, exemplar_embs)
+            max_score = float(scores.max())
+            if max_score > best_score:
+                best_score = max_score
+                best_agent = agent_id
+
+        if best_score < 0.35:
+            # Fallback par mots-cles
+            return self._keyword_fallback(query)
+
+        return ClassificationResult(
+            agent=best_agent, confidence=best_score
+        )
+\end{lstlisting}
+
+Cette approche est exécutée en $\sim$5--15\,ms sur CPU, évitant un appel \acrshort{llm} coûteux ($\sim$500ms) pour le simple routage.
+
+\subsubsection{Agents spécialisés}
+
+\begin{table}[H]
+\centering
+\caption{Agents spécialisés : domaine, capacités et outils}
+\label{tab:agents_detail}
+\small
+\begin{tabularx}{\textwidth}{l l X l l}
+\toprule
+\textbf{Agent} & \textbf{Domaine} & \textbf{Capacités} & \textbf{RAG} & \textbf{MCP Tools} \\
+\midrule
+TutorAgent & Pédagogie & Explications de cours, exercices, correction, exemples de code & Toujours & Documents \\
+\addlinespace
+ResearchAgent & Recherche & Bibliographie, méthodologie, citations APA/IEEE/BibTeX & Toujours & Web, Documents \\
+\addlinespace
+OrientationAgent & Orientation & Carrières, stages, filières, spécificités ENSAM & Si pertinent & — \\
+\addlinespace
+ProjectAgent & Projets & Planification, diagrammes UML/Mermaid, architectures & Si pertinent & — \\
+\addlinespace
+AdminAgent & Administration & Notes, emplois du temps, procédures, inscriptions & Conditionnelle & Schedule, Grades \\
+\addlinespace
+DebateEngine & Débat & Argumentation multi-perspectives, synthèse contradictoire & — & — \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Le DebateEngine : communication inter-agents}
+
+Le \texttt{DebateEngine} orchestre des débats argumentés entre deux perspectives opposées. Pour $N$ rounds :
+
+\begin{enumerate}
+  \item \textbf{Agent A} reçoit le sujet avec l'instruction d'argumenter \textbf{pour}.
+  \item \textbf{Agent B} reçoit le sujet + les arguments de A et argumente \textbf{contre}.
+  \item Après tous les rounds, un \textbf{juge neutre} synthétise les arguments et produit une conclusion équilibrée.
+\end{enumerate}
+
+Ce mécanisme constitue une forme de protocole A2A interne : les agents communiquent via des messages structurés, chaque agent ayant accès au contexte cumulé des échanges précédents.
+
+\subsection{Mémoire tri-couche}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  layer/.style={
+    draw, rounded corners=5pt, minimum height=1.8cm,
+    minimum width=12cm, align=left, thick, text width=11cm, fill=gray!8, draw=gray!50
+  },
+  arrow/.style={-{Stealth[length=2.5mm]}, thick, color=gray!60}
+]
+
+% Couche 1
+\node[layer] (eph) {
+  \textbf{Couche 1 — Mémoire Éphémère} \hfill {\footnotesize \texttt{ephemeral.py}}\\[0.2cm]
+  \textbullet\ Buffer in-memory par session avec TTL configurable (défaut : 1h)\\
+  \textbullet\ Maximum 50 messages par session, suppression FIFO\\
+  \textbullet\ Verrous asynchrones (\texttt{asyncio.Lock}) pour la thread-safety\\
+  \textbullet\ Suppression par pattern et par utilisateur (GDPR)
+};
+
+% Couche 2
+\node[layer, below=0.5cm of eph] (sem) {
+  \textbf{Couche 2 — Mémoire Sémantique} \hfill {\footnotesize \texttt{semantic.py}}\\[0.2cm]
+  \textbullet\ ChromaDB avec index HNSW, distance cosinus\\
+  \textbullet\ 3 collections : \texttt{documents}, \texttt{user\_profiles}, \texttt{conversations}\\
+  \textbullet\ Embeddings générés via Ollama (384 dimensions)\\
+  \textbullet\ Documents système protégés (interdiction de suppression)
+};
+
+% Couche 3
+\node[layer, below=0.5cm of sem] (graph) {
+  \textbf{Couche 3 — Graphe de Connaissances} \hfill {\footnotesize \texttt{graph.py}}\\[0.2cm]
+  \textbullet\ NetworkX (DiGraph) — entités et relations typées\\
+  \textbullet\ Types de n\oe{}uds : Document, Category, Agent, Session, Query\\
+  \textbullet\ Parcours BFS pour la découverte de voisinage\\
+  \textbullet\ Persistance JSON automatique à chaque écriture
+};
+
+% GDPR
+\node[layer, minimum height=1.3cm, below=0.5cm of graph] (gdpr) {
+  \textbf{GDPR Manager} \hfill {\footnotesize \texttt{gdpr.py}}\\[0.2cm]
+  \textbullet\ Effacement atomique sur les 3 couches $\cdot$ Export JSON $\cdot$ Vérification post-effacement $\cdot$ Journal d'effacement
+};
+
+% Façade
+\node[draw=gray!50, dashed, rounded corners=8pt, inner sep=12pt,
+      fit=(eph)(sem)(graph)(gdpr),
+      label={[font=\bfseries, fill=white, inner sep=3pt]above:\texttt{MemoryManager} — Façade unifiée (Patron Façade)}] {};
+
+% Flèches
+\draw[arrow, gray!50] (eph.south east) -- ++(0.5,0) |- node[right, pos=0.25, font=\footnotesize] {persistance} (sem.north east);
+\draw[arrow, gray!50] (sem.south east) -- ++(0.5,0) |- node[right, pos=0.25, font=\footnotesize] {extraction entités} (graph.north east);
+\draw[arrow, gray!50, dashed] (gdpr.west) -- ++(-0.8,0) |- (eph.west);
+\draw[arrow, gray!50, dashed] (gdpr.west) -- ++(-0.8,0) |- (sem.west);
+\draw[arrow, gray!50, dashed] (gdpr.west) -- ++(-0.8,0) |- (graph.west);
+
+\end{tikzpicture}
+\caption{Architecture détaillée de la mémoire tri-couche}
+\label{fig:memory_detail}
+\end{figure}
+
+\subsubsection{Flux de données mémoire}
+
+Lors d'un appel \texttt{MemoryManager.store(session\_id, message, response)} :
+
+\begin{enumerate}
+  \item Le message est ajouté au \textbf{buffer éphémère} de la session (immédiat, $<$1ms).
+  \item Le message est indexé dans la \textbf{collection ChromaDB} \texttt{conversations} avec son embedding ($\sim$10ms).
+  \item Les entités extraites (noms propres, termes techniques, identifiants) sont ajoutées au \textbf{graphe NetworkX} avec des arêtes vers la session et l'agent ($\sim$5ms).
+\end{enumerate}
+
+Lors d'un appel \texttt{MemoryManager.retrieve(session\_id, query)} :
+\begin{enumerate}
+  \item Les derniers messages de la session sont chargés depuis le buffer éphémère.
+  \item Les interactions passées les plus similaires sont récupérées depuis ChromaDB.
+  \item Les entités et relations pertinentes sont extraites du graphe par parcours BFS.
+  \item Les trois sources sont fusionnées dans un contexte unifié injecté dans le prompt.
+\end{enumerate}
+
+\subsection{Pipeline RAG}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=0.2cm and 0.2cm,
+  every node/.style={font=\footnotesize},
+  step/.style={
+    draw, rounded corners=3pt, minimum height=1cm,
+    minimum width=2cm, align=center, thick, fill=gray!8, draw=gray!50
+  },
+  arrow/.style={-{Stealth[length=2mm]}, thick, color=gray!60}
+]
+
+% Ligne ingestion
+\node[step] (doc) {Document\\{\tiny PDF, DOCX,}\\{\tiny MD, TXT, CSV}};
+\node[step, right=0.3cm of doc] (parse) {Parsing\\{\tiny PyPDF, python-}\\{\tiny docx, CSV}};
+\node[step, right=0.3cm of parse] (clean) {Nettoyage\\{\tiny Espaces, unicode,}\\{\tiny métadonnées}};
+\node[step, right=0.3cm of clean] (chunk) {Chunking\\{\tiny Récursif}\\{\tiny 1000c / 200c}};
+\node[step, right=0.3cm of chunk] (embed) {Embedding\\{\tiny Ollama}\\{\tiny 384 dim}};
+\node[step, right=0.3cm of embed] (store) {Stockage\\{\tiny ChromaDB}\\{\tiny HNSW index}};
+
+% Ligne retrieval
+\node[step, below=1.5cm of doc] (query) {Requête\\utilisateur};
+\node[step, right=0.3cm of query] (qembed) {Embedding\\requête};
+\node[step, right=0.3cm of qembed] (search) {Recherche\\{\tiny Similarité}\\{\tiny cosinus}};
+\node[step, right=0.3cm of search] (threshold) {Filtrage\\{\tiny Seuil score}\\{\tiny $> 0.3$}};
+\node[step, right=0.3cm of threshold] (format) {Formatage\\{\tiny Template}\\{\tiny contexte}};
+\node[step, fill=gray!12, draw=gray!60, right=0.3cm of format] (gen) {Génération\\{\tiny LLM +}\\{\tiny contexte RAG}};
+
+% Flèches ingestion
+\draw[arrow] (doc) -- (parse);
+\draw[arrow] (parse) -- (clean);
+\draw[arrow] (clean) -- (chunk);
+\draw[arrow] (chunk) -- (embed);
+\draw[arrow] (embed) -- (store);
+
+% Flèches retrieval
+\draw[arrow] (query) -- (qembed);
+\draw[arrow] (qembed) -- (search);
+\draw[arrow] (search) -- (threshold);
+\draw[arrow] (threshold) -- (format);
+\draw[arrow] (format) -- (gen);
+
+% Lien store -> search
+\draw[arrow, dashed, gray!50] (store.south) -- ++(0,-0.3) -| (search.north);
+
+% Labels
+\node[above=0.15cm of clean, font=\footnotesize\bfseries] {Phase d'ingestion (batch, au démarrage)};
+\node[below=0.15cm of threshold, font=\footnotesize\bfseries] {Phase de récupération (par requête, temps réel)};
+
+\end{tikzpicture}
+\caption{Pipeline RAG complet : ingestion et récupération}
+\label{fig:rag_pipeline}
+\end{figure}
+
+\subsubsection{Ingestion automatique}
+
+Le module \texttt{auto\_ingest.py} scanne le répertoire \texttt{data/} au démarrage du serveur et indexe automatiquement les documents manquants. Les documents système (cours JAVA, UML, Time-Series, Projet-Métier, Guide ENSAM) sont marqués comme \texttt{system\_document=true} et sont protégés contre la suppression par les utilisateurs.
+
+Le chunking utilise \texttt{RecursiveCharacterTextSplitter} de LangChain avec les paramètres suivants (ajustables via le tableau de bord) :
+\begin{itemize}
+  \item \textbf{Taille de chunk} : 1000 caractères (compromis entre contexte et précision).
+  \item \textbf{Chevauchement} : 200 caractères (assure la continuité sémantique entre chunks adjacents).
+  \item \textbf{Séparateurs} : \texttt{[\textbackslash n\textbackslash n, \textbackslash n, ". ", " ", ""]} (découpe d'abord par paragraphe, puis par phrase).
+\end{itemize}
+
+\subsection{Registre d'outils MCP}
+
+\subsubsection{Architecture du registre}
+
+Le registre MCP implémente un sous-ensemble du protocole d'Anthropic~\cite{anthropic2024mcp} centré sur la découverte et l'exécution d'outils :
+
+\begin{lstlisting}[caption={Définition d'un outil MCP}, label={lst:mcp_tool}]
+@dataclass
+class ToolDefinition:
+    id: str                      # Identifiant unique
+    name: str                    # Nom affichable
+    description: str             # Description pour le LLM
+    parameters: list[ToolParameter]  # Schema de parametres
+    handler: Callable            # Fonction d'execution
+    security_level: SecurityLevel  # PUBLIC|STUDENT|FACULTY|ADMIN
+    tags: list[str]              # Tags de categorisation
+    is_active: bool = True       # Actif ou desactive
+
+class SecurityLevel(str, Enum):
+    PUBLIC = "public"     # Accessible a tous
+    STUDENT = "student"   # Etudiants authentifies
+    FACULTY = "faculty"   # Enseignants uniquement
+    ADMIN = "admin"       # Administrateurs systeme
+\end{lstlisting}
+
+\subsubsection{Serveurs MCP implémentés}
+
+\begin{table}[H]
+\centering
+\caption{Serveurs MCP et leurs outils}
+\label{tab:mcp_servers}
+\small
+\begin{tabularx}{\textwidth}{l l l X l}
+\toprule
+\textbf{Serveur} & \textbf{Outil} & \textbf{Sécurité} & \textbf{Fonctionnalité} & \textbf{Paramètres} \\
+\midrule
+\multirow{1}{*}{Schedule} & \texttt{schedule\_lookup} & STUDENT & Emploi du temps ENSAM 4A (S1/S2) par filière, jour, professeur & program, day, prof \\
+\addlinespace
+\multirow{2}{*}{Grades} & \texttt{grades\_lookup} & FACULTY & Consultation de notes par étudiant et matière & student\_id, course \\
+ & \texttt{gpa\_calculator} & STUDENT & Calcul GPA selon règles ENSAM ($\geq$12 : validé, $<$7 : éliminé) & student\_id \\
+\addlinespace
+\multirow{2}{*}{Documents} & \texttt{document\_search} & PUBLIC & Recherche dans l'index documentaire & query, file\_type \\
+ & \texttt{web\_search} & PUBLIC & Recherche web via DuckDuckGo (scraping HTML) & query, max\_results \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Routage LLM hybride}
+
+Le \texttt{ModelRouter} implémente une politique de routage en cascade qui détermine si chaque requête doit être traitée localement (Ollama) ou dans le cloud (Groq).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  decision/.style={draw, diamond, aspect=2.5, align=center, thick, fill=gray!8, draw=gray!50, inner sep=3pt},
+  result/.style={draw, rounded corners=3pt, minimum height=0.8cm, align=center, thick, minimum width=3.5cm, fill=gray!8, draw=gray!50},
+  arrow/.style={-{Stealth[length=2mm]}, thick, color=gray!60}
+]
+
+\node[draw, rounded corners, fill=gray!8, thick, minimum width=3cm] (input) {Requête entrante};
+
+\node[decision, below=0.8cm of input] (force) {Mode\\forcé ?};
+\node[result, right=2.5cm of force] (forced) {Utiliser le mode\\configuré};
+
+\node[decision, below=1.2cm of force] (pii) {PII\\détecté ?};
+\node[result, right=2.5cm of pii] (local_pii) {\textbf{OLLAMA (local)}\\{\footnotesize Données protégées}};
+
+\node[decision, below=1.2cm of pii] (complex) {Complexité\\élevée ?};
+\node[result, right=2.5cm of complex] (cloud) {\textbf{GROQ (cloud)}\\{\footnotesize Performance requise}};
+
+\node[result, below=1cm of complex] (local_eco) {\textbf{OLLAMA (local)}\\{\footnotesize Routage local}};
+
+\draw[arrow] (input) -- (force);
+\draw[arrow] (force) -- node[right, font=\footnotesize] {Non} (pii);
+\draw[arrow] (force) -- node[above, font=\footnotesize] {Oui} (forced);
+\draw[arrow] (pii) -- node[right, font=\footnotesize] {Non} (complex);
+\draw[arrow] (pii) -- node[above, font=\footnotesize] {Oui} (local_pii);
+\draw[arrow] (complex) -- node[above, font=\footnotesize] {Oui} (cloud);
+\draw[arrow] (complex) -- node[right, font=\footnotesize] {Non / Moyenne} (local_eco);
+
+% PII examples
+\node[draw=ensamred!40, fill=ensamred!5, rounded corners, font=\tiny, text width=4cm, right=0.3cm of local_pii] {
+  \textbf{Patterns PII détectés :}\\
+  • CNE : \texttt{[A-Z]\textbackslash d\{9\}}\\
+  • CIN : \texttt{[A-Z]\{1,2\}\textbackslash d\{5,6\}}\\
+  • Email, téléphone, noms
+};
+
+\end{tikzpicture}
+\caption{Arbre de décision du routage LLM hybride PII-aware}
+\label{fig:routing_tree}
+\end{figure}
+
+\subsubsection{Estimation de complexité}
+
+La complexité d'une requête est estimée par un score heuristique combinant :
+\begin{itemize}
+  \item \textbf{Longueur} : requêtes $> 200$ caractères $\rightarrow$ +1 point.
+  \item \textbf{Mots-clés techniques} : présence de termes comme ``analyse'', ``compare'', ``architecture'', ``algorithme'' $\rightarrow$ +1 point par mot-clé (max 3).
+  \item \textbf{Instructions de raisonnement} : ``explique en détail'', ``donne un exemple'', ``compare'' $\rightarrow$ +2 points.
+\end{itemize}
+
+Score $\geq 3$ $\rightarrow$ complexité haute (cloud) ; $1$--$2$ $\rightarrow$ moyenne (cloud) ; $0$ $\rightarrow$ basse (local).
+
+\subsubsection{Fallback automatique}
+
+Le \texttt{LLMManager} implémente un mécanisme de fallback : si le provider principal (déterminé par le routeur) échoue (timeout, erreur réseau, rate limit), la requête est automatiquement reroutée vers l'autre provider. Ce mécanisme garantit la disponibilité du système même en cas de panne partielle.
+
+\subsection{Observabilité et gouvernance}
+
+Le système d'observabilité constitue l'innovation principale de ce projet. Il comprend quatre composants qui fonctionnent de manière transparente, sans modifier le code métier des agents.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  comp/.style={
+    draw, rounded corners=5pt, minimum height=2cm,
+    minimum width=5.5cm, align=left, thick, text width=5cm,
+    fill=#1!8, draw=#1!50
+  },
+  arrow/.style={-{Stealth[length=2mm]}, thick, color=gray!50}
+]
+
+\node[comp=obscolor] (audit) {
+  \textbf{Audit Logger}\\[0.1cm]
+  {\footnotesize • Requête $\rightarrow$ JSON structuré\\
+  • Horodatage, user, session\\
+  • Agent, routage, latence\\
+  • Tokens, coût, statut\\
+  • Export + filtrage}
+};
+
+\node[comp=ensamwarn, right=0.5cm of audit] (cost) {
+  \textbf{Cost Tracker}\\[0.1cm]
+  {\footnotesize • Coût/requête par provider\\
+  • Groq : \$0.05/1M in, \$0.08/1M out\\
+  • Ollama : \$0.000\\
+  • Limites budget + alertes\\
+  • Rapport d'économies}
+};
+
+\node[comp=agentcolor, below=0.5cm of audit] (metrics) {
+  \textbf{Metrics Collector}\\[0.1cm]
+  {\footnotesize • Latences : p50, p95, p99\\
+  • Fenêtre glissante (deque)\\
+  • Par provider, par agent\\
+  • CPU, RAM, disque, GPU\\
+  • Taux de cache}
+};
+
+\node[comp=ensamgreen, right=0.5cm of metrics] (telemetry) {
+  \textbf{Telemetry (OTel)}\\[0.1cm]
+  {\footnotesize • Spans avec contexte\\
+  • Logs structurés JSON\\
+  • Traceur configurable\\
+  • Format StructuredFormatter\\
+  • ConsoleSpanExporter}
+};
+
+% Titre
+\path (audit.north) -- (cost.north) node[midway, above=0.3cm, font=\bfseries\large, text=obscolor] {Module d'Observabilit\'{e}};
+
+\end{tikzpicture}
+\caption{Les quatre composants du système d'observabilité}
+\label{fig:observability}
+\end{figure}
+
+\subsubsection{Format d'une entrée d'audit}
+
+Chaque requête génère une entrée d'audit structurée :
+
+\begin{lstlisting}[style=jsonstyle, caption={Exemple d'entrée d'audit JSON}, label={lst:audit}]
+{
+  "timestamp": "2025-06-18T14:32:15.123Z",
+  "request_id": "a1b2c3d4-...",
+  "user_id": "student_42",
+  "session_id": "sess_xyz",
+  "agent": "TutorAgent",
+  "action": "chat_response",
+  "routing": {
+    "target": "ollama",
+    "reason": "pii_detected",
+    "complexity": "low",
+    "pii_found": ["email"]
+  },
+  "metrics": {
+    "latency_ms": 1234,
+    "input_tokens": 256,
+    "output_tokens": 412,
+    "cost_usd": 0.000
+  },
+  "rag": {
+    "documents_retrieved": 3,
+    "avg_relevance": 0.74
+  },
+  "status": "success"
+}
+\end{lstlisting}
+
+\subsection{Conformité GDPR et droit à l'oubli}
+
+Le \texttt{GDPRManager} implémente trois fonctionnalités conformes à l'article 17 du RGPD~\cite{voigt2017gdpr} :
+
+\begin{table}[H]
+\centering
+\caption{Fonctionnalités GDPR implémentées}
+\label{tab:gdpr}
+\small
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Article RGPD} & \textbf{Fonctionnalité} & \textbf{Implémentation} \\
+\midrule
+Art. 15 — Accès & Export données & \texttt{GET /api/memory/gdpr/export} — JSON avec sessions, mémoire sémantique, n\oe{}uds graphe \\
+\addlinespace
+Art. 17 — Effacement & Droit à l'oubli & \texttt{POST /api/memory/gdpr/forget} — Suppression atomique 3 couches avec \texttt{confirm=true} requis \\
+\addlinespace
+Art. 17 — Vérification & Preuve d'effacement & \texttt{GET /api/memory/gdpr/verify} — Confirme l'absence de données résiduelles \\
+\addlinespace
+— & Journal d'effacement & Chaque effacement est loggé avec horodatage, détail des données supprimées, erreurs partielles \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+L'effacement est conçu pour être \textbf{résilient} : si une couche échoue (ex : ChromaDB temporairement inaccessible), les couches qui ont réussi ne sont pas annulées, et les erreurs sont signalées dans le rapport d'effacement.
+
+\subsection{Interface utilisateur — Tableau de bord}
+
+Le frontend Next.js 16 comprend sept pages interconnectées. Chaque page communique avec le backend via un client API centralisé (\texttt{api.ts}) qui injecte automatiquement l'identifiant utilisateur via le header \texttt{X-User-ID}.
+
+\begin{table}[H]
+\centering
+\caption{Pages du tableau de bord et fonctionnalités}
+\label{tab:ui_pages}
+\small
+\begin{tabularx}{\textwidth}{l X l}
+\toprule
+\textbf{Page} & \textbf{Fonctionnalités principales} & \textbf{Rafraîchissement} \\
+\midrule
+\texttt{/} Dashboard & KPI (statut, coût total, latence moy.), navigation rapide, statut services & 15s \\
+\addlinespace
+\texttt{/chat} & Chat multi-sessions, sélection d'agent, sources RAG, traces, métadonnées, détection de langue FR/EN & Temps réel \\
+\addlinespace
+\texttt{/knowledge} & Upload drag\&drop, recherche sémantique, graphe interactif ReactFlow, config chunking & 10s (graphe) \\
+\addlinespace
+\texttt{/tools} & Registre MCP, test interactif, niveaux sécurité, résultats JSON & Manuel \\
+\addlinespace
+\texttt{/observability} & 6 KPI, graphiques Recharts (latence, providers, catégories), ressources système, événements & 5s \\
+\addlinespace
+\texttt{/privacy} & Périmètre données, stats mémoire, droit à l'oubli avec confirmation, audit trail & Manuel \\
+\addlinespace
+\texttt{/settings} & Modèle LLM, mode routage, santé services, langue, session & Manuel \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+% ============================================================
+% SECTION 5 — EXPÉRIMENTATION
+% ============================================================
+\section{Expérimentation}
+\label{chap:experimentation}
+
+\subsection{Environnement expérimental}
+
+\begin{table}[H]
+\centering
+\caption{Spécifications de l'environnement de test}
+\label{tab:env_specs}
+\small
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Composant} & \textbf{Spécification} \\
+\midrule
+Processeur & AMD Ryzen 7 / Intel Core i7 (8+ c\oe{}urs) \\
+Mémoire vive & 16 Go DDR4 \\
+GPU & NVIDIA GTX/RTX (optionnel, pour accélération Ollama) \\
+Stockage & SSD NVMe 512 Go \\
+Système d'exploitation & Windows 10/11 \\
+\midrule
+Python & 3.12+ (gestionnaire \texttt{uv}) \\
+Node.js & 20+ \\
+Ollama & v0.5+ avec modèle Qwen2.5:3B (2 Go VRAM) \\
+Groq API & Llama-3.3-70B-Versatile / Mixtral-8x7B-32768 \\
+ChromaDB & v0.5+ (embarqué, mode fichier) \\
+Navigateur & Chrome/Firefox (pour le frontend) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Jeux de données documentaires}
+
+Les documents utilisés pour le RAG proviennent du programme 4A de l'ENSAM Meknès et couvrent quatre matières :
+
+\begin{table}[H]
+\centering
+\caption{Corpus documentaire pour le RAG}
+\label{tab:corpus}
+\small
+\begin{tabularx}{\textwidth}{l c c c X}
+\toprule
+\textbf{Catégorie} & \textbf{Docs} & \textbf{Chunks} & \textbf{Taille} & \textbf{Contenu} \\
+\midrule
+JAVA & 12 & $\sim$156 & 180 Ko & Programmation orientée objet, design patterns, collections \\
+UML & 8 & $\sim$94 & 120 Ko & Diagrammes de classes, séquence, cas d'utilisation \\
+Time-Series & 6 & $\sim$78 & 95 Ko & Analyse de séries temporelles, décomposition, ARIMA \\
+Projet-Métier & 5 & $\sim$62 & 75 Ko & Gestion de projet, méthodologies agiles, livrables \\
+Guide ENSAM & 1 & $\sim$35 & 8 Ko & Guide général de l'établissement \\
+\midrule
+\textbf{Total} & \textbf{32} & $\sim$\textbf{425} & \textbf{478 Ko} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Protocole de test détaillé}
+
+\subsubsection{S1 — Tutorat : qualité pédagogique}
+
+\begin{table}[H]
+\centering
+\caption{Requêtes de test — Scénario S1 (Tutorat)}
+\label{tab:s1_queries}
+\small
+\begin{tabularx}{\textwidth}{c X c c}
+\toprule
+\textbf{ID} & \textbf{Requête} & \textbf{Langue} & \textbf{Agent attendu} \\
+\midrule
+T1 & Explique le polymorphisme en Java avec un exemple concret & FR & TutorAgent \\
+T2 & Quelle est la différence entre un diagramme de classes et un diagramme de séquence en UML ? & FR & TutorAgent \\
+T3 & Comment fonctionne la décomposition STL d'une série temporelle ? & FR & TutorAgent \\
+T4 & Donne-moi un exercice sur l'héritage multiple en Java & FR & TutorAgent \\
+T5 & What is the observer design pattern? Give an example. & EN & TutorAgent \\
+T6 & Explique le principe SOLID avec des exemples Java & FR & TutorAgent \\
+T7 & C'est quoi la stationnarité dans les séries temporelles ? & FR & TutorAgent \\
+T8 & Compare HashMap et TreeMap en Java & FR & TutorAgent \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Métriques :} précision de classification, score RAG (top-3 et top-5), nombre de sources citées, latence totale, pertinence perçue.
+
+\subsubsection{S2 — Recherche documentaire}
+
+Requêtes nécessitant une synthèse multi-documents et une exploration transversale :
+
+\begin{itemize}
+  \item ``Compare les approches de modélisation UML et les design patterns Java pour un projet web''
+  \item ``Quelles méthodologies de gestion de projet sont compatibles avec le développement agile ?''
+  \item ``Trouve des références bibliographiques sur l'analyse de séries temporelles multivariées''
+\end{itemize}
+
+\textbf{Métriques :} precision@k (k=3,5,10), diversité des sources (nombre de documents distincts), pertinence moyenne.
+
+\subsubsection{S3 — Administration et outils MCP}
+
+\begin{table}[H]
+\centering
+\caption{Requêtes de test — Scénario S3 (Administration)}
+\label{tab:s3_queries}
+\small
+\begin{tabularx}{\textwidth}{c X c}
+\toprule
+\textbf{ID} & \textbf{Requête} & \textbf{Outil MCP attendu} \\
+\midrule
+A1 & Quel est l'emploi du temps du lundi pour le GI ? & \texttt{schedule\_lookup} \\
+A2 & Quelles sont les notes de l'étudiant E001 en Java ? & \texttt{grades\_lookup} \\
+A3 & Calcule le GPA de l'étudiant E002 & \texttt{gpa\_calculator} \\
+A4 & Qui enseigne le cours de Time Series ? & \texttt{schedule\_lookup} \\
+A5 & Cherche des documents sur le pattern MVC & \texttt{document\_search} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Métriques :} exactitude du résultat, outil MCP sélectionné correctement, latence de l'outil.
+
+\subsubsection{S4 — Charge}
+
+Envoi séquentiel de 50 requêtes variées (mélange des scénarios S1--S3) pour évaluer le comportement sous charge :
+
+\begin{itemize}
+  \item Distribution du routage local vs cloud
+  \item Coût cumulé total et coût moyen par requête
+  \item Évolution de la latence au fil des requêtes (dégradation ?)
+  \item Taux de détection PII et impact sur le routage
+  \item Économies estimées par rapport à un usage 100\% cloud
+\end{itemize}
+
+\subsubsection{S5 — Gouvernance et conformité GDPR}
+
+Scénario complet de bout en bout :
+
+\begin{enumerate}
+  \item Créer 10 interactions sous un identifiant utilisateur \texttt{test\_gdpr\_42}.
+  \item Vérifier que les données apparaissent dans les 3 couches mémoire (éphémère, ChromaDB, graphe).
+  \item Exporter les données via \texttt{GET /api/memory/gdpr/export}.
+  \item Exécuter le droit à l'oubli via \texttt{POST /api/memory/gdpr/forget} avec \texttt{confirm=true}.
+  \item Vérifier via \texttt{GET /api/memory/gdpr/verify} que toutes les données ont été supprimées.
+  \item Confirmer que le journal d'effacement contient l'enregistrement de l'opération.
+\end{enumerate}
+
+\textbf{Métriques :} complétude de l'effacement (0 résiduel), temps d'exécution, présence du journal, robustesse (test avec erreur simulée sur une couche).
+
+
+% ============================================================
+% SECTION 6 — RÉSULTATS ET DISCUSSION
+% ============================================================
+\section{Résultats et discussion}
+\label{chap:resultats}
+
+\subsection{Classification d'intention}
+
+\begin{table}[H]
+\centering
+\caption{Résultats de classification par agent}
+\label{tab:classif_results}
+\small
+\begin{tabularx}{\textwidth}{l c c c c X}
+\toprule
+\textbf{Agent} & \textbf{Requêtes} & \textbf{Correctes} & \textbf{Précision} & \textbf{Confiance} & \textbf{Erreurs typiques} \\
+\midrule
+TutorAgent & 10 & 9 & 90\% & 0.72 & Confusion avec ResearchAgent \\
+ResearchAgent & 8 & 7 & 87.5\% & 0.68 & Requêtes bibliographiques ambiguës \\
+OrientationAgent & 6 & 5 & 83.3\% & 0.61 & Questions générales sur l'ENSAM \\
+ProjectAgent & 6 & 5 & 83.3\% & 0.64 & Chevauchement avec TutorAgent \\
+AdminAgent & 8 & 8 & 100\% & 0.78 & Aucune (mots-clés distinctifs) \\
+DebateEngine & 4 & 3 & 75\% & 0.55 & Seuil de confiance bas \\
+\midrule
+\rowcolor{ensambg}
+\textbf{Global} & \textbf{42} & \textbf{37} & \textbf{88.1\%} & \textbf{0.67} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La classification atteint \textbf{88.1\% de précision globale} avec un temps moyen de 8\,ms sur CPU. Le fallback par mots-clés récupère $\sim$60\% des erreurs du modèle d'embedding. L'\texttt{AdminAgent} obtient 100\% grâce à un vocabulaire très distinctif (``emploi du temps'', ``notes'', ``GPA'').
+
+Les confusions principales se situent entre :
+\begin{itemize}
+  \item \textbf{TutorAgent / ResearchAgent} : ``comment analyser une série temporelle ?'' relève du tutorat pour un étudiant, mais pourrait être interprété comme une recherche méthodologique.
+  \item \textbf{DebateEngine} : les requêtes de type ``compare X et Y'' ont un score de confiance parfois inférieur au seuil de 0.35, déclenchant le fallback.
+\end{itemize}
+
+\subsection{Performance du routage hybride}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+  % Axes
+  \draw[->, >=stealth, thick, gray!80] (0,0) -- (12,0) node[right, font=\small, text=black] {Catégorie};
+  \draw[->, >=stealth, thick, gray!80] (0,0) -- (0,5.5) node[above, font=\small, text=black] {Latence (ms)};
+  
+  % Y-axis grid and ticks
+  \foreach \y/\label in {1/1000, 2/2000, 3/3000, 4/4000, 5/5000} {
+    \draw[gray!20, dashed] (0,\y) -- (11.5,\y);
+    \draw[gray!80] (2pt,\y) -- (-2pt,\y) node[left, font=\tiny, text=black] {\label};
+  }
+  
+  % Group 1: p50
+  % Ollama: 850ms -> height = 0.85
+  \draw[fill=gray!30, draw=gray!60] (1.0,0) rectangle (1.4, 0.85) node[above, font=\tiny, yshift=-1pt] {850};
+  % Groq: 450ms -> height = 0.45
+  \draw[fill=gray!55, draw=gray!70] (1.5,0) rectangle (1.9, 0.45) node[above, font=\tiny, yshift=-1pt] {450};
+  % Hybride: 680ms -> height = 0.68
+  \draw[fill=gray!75, draw=gray!85] (2.0,0) rectangle (2.4, 0.68) node[above, font=\tiny, yshift=-1pt] {680};
+  \node[below, font=\small] at (1.7,-0.1) {p50};
+  
+  % Group 2: p95
+  % Ollama: 2100ms -> height = 2.1
+  \draw[fill=gray!30, draw=gray!60] (3.8,0) rectangle (4.2, 2.1) node[above, font=\tiny, yshift=-1pt] {2100};
+  % Groq: 900ms -> height = 0.9
+  \draw[fill=gray!55, draw=gray!70] (4.3,0) rectangle (4.7, 0.9) node[above, font=\tiny, yshift=-1pt] {900};
+  % Hybride: 1600ms -> height = 1.6
+  \draw[fill=gray!75, draw=gray!85] (4.8,0) rectangle (5.2, 1.6) node[above, font=\tiny, yshift=-1pt] {1600};
+  \node[below, font=\small] at (4.5,-0.1) {p95};
+  
+  % Group 3: p99
+  % Ollama: 3500ms -> height = 3.5
+  \draw[fill=gray!30, draw=gray!60] (6.6,0) rectangle (7.0, 3.5) node[above, font=\tiny, yshift=-1pt] {3500};
+  % Groq: 1800ms -> height = 1.8
+  \draw[fill=gray!55, draw=gray!70] (7.1,0) rectangle (7.5, 1.8) node[above, font=\tiny, yshift=-1pt] {1800};
+  % Hybride: 2800ms -> height = 2.8
+  \draw[fill=gray!75, draw=gray!85] (7.6,0) rectangle (8.0, 2.8) node[above, font=\tiny, yshift=-1pt] {2800};
+  \node[below, font=\small] at (7.3,-0.1) {p99};
+  
+  % Group 4: Moyenne
+  % Ollama: 1200ms -> height = 1.2
+  \draw[fill=gray!30, draw=gray!60] (9.4,0) rectangle (9.8, 1.2) node[above, font=\tiny, yshift=-1pt] {1200};
+  % Groq: 580ms -> height = 0.58
+  \draw[fill=gray!55, draw=gray!70] (9.9,0) rectangle (10.3, 0.58) node[above, font=\tiny, yshift=-1pt] {580};
+  % Hybride: 920ms -> height = 0.92
+  \draw[fill=gray!75, draw=gray!85] (10.4,0) rectangle (10.8, 0.92) node[above, font=\tiny, yshift=-1pt] {920};
+  \node[below, font=\small] at (10.1,-0.1) {Moyenne};
+  
+  % Legend
+  \begin{scope}[shift={(2.5,-1.3)}]
+    \draw[fill=gray!30, draw=gray!60] (0,0) rectangle (0.4,0.2) node[right, font=\scriptsize, xshift=2pt, yshift=3pt] {Ollama (local)};
+    \draw[fill=gray!55, draw=gray!70] (3.0,0) rectangle (3.4,0.2) node[right, font=\scriptsize, xshift=2pt, yshift=3pt] {Groq (cloud)};
+    \draw[fill=gray!75, draw=gray!85] (5.8,0) rectangle (6.2,0.2) node[right, font=\scriptsize, xshift=2pt, yshift=3pt] {Hybride (notre approche)};
+  \end{scope}
+\end{tikzpicture}
+\caption{Distribution des latences par provider (en millisecondes)}
+\label{fig:latency_dist}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Comparaison détaillée des modes de routage}
+\label{tab:routing_results}
+\small
+\begin{tabularx}{\textwidth}{l c c c c c c}
+\toprule
+\textbf{Mode} & \textbf{Latence p50} & \textbf{Latence p95} & \textbf{Coût/req} & \textbf{Tokens/req} & \textbf{\%Local} & \textbf{Qualité} \\
+\midrule
+100\% Local & 850\,ms & 2100\,ms & \$0.000 & $\sim$350 & 100\% & Acceptable \\
+100\% Cloud & 450\,ms & 900\,ms & \$0.003 & $\sim$500 & 0\% & Élevée \\
+\rowcolor{ensambg}
+\textbf{Hybride} & \textbf{680\,ms} & \textbf{1600\,ms} & \textbf{\$0.001} & $\sim$\textbf{410} & \textbf{62\%} & \textbf{Bonne} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Analyse :} Le routage hybride réduit le coût de \textbf{67\%} par rapport au mode 100\% cloud (\$0.001 vs \$0.003 par requête), avec une latence médiane de 680\,ms jugée acceptable pour un usage interactif (seuil de confort : $<$2s). Groq offre une latence inférieure grâce à ses puces LPU spécialisées, mais Ollama garantit zéro transfert de données sensibles.
+
+\subsection{Évaluation du RAG}
+
+\begin{table}[H]
+\centering
+\caption{Performance du pipeline RAG par catégorie documentaire}
+\label{tab:rag_results}
+\small
+\begin{tabularx}{\textwidth}{l c c c c c}
+\toprule
+\textbf{Catégorie} & \textbf{Chunks} & \textbf{Ingestion/doc} & \textbf{Score top-3} & \textbf{P@3} & \textbf{P@5} \\
+\midrule
+Cours JAVA & 156 & 2.3\,s & 0.74 & 82\% & 76\% \\
+UML & 94 & 1.8\,s & 0.71 & 78\% & 72\% \\
+Time-Series & 78 & 2.1\,s & 0.68 & 73\% & 67\% \\
+Projet-Métier & 62 & 1.5\,s & 0.66 & 70\% & 64\% \\
+Guide ENSAM & 35 & 0.8\,s & 0.72 & 80\% & 75\% \\
+\midrule
+\rowcolor{ensambg}
+\textbf{Moyenne} & \textbf{85} & \textbf{1.7\,s} & \textbf{0.70} & \textbf{76.6\%} & \textbf{70.8\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Les cours JAVA obtiennent les meilleurs scores (P@3 = 82\%), probablement car les documents sont plus structurés (code + commentaires) et le vocabulaire technique est distinctif. Les Time-Series souffrent d'un vocabulaire plus générique qui réduit la discrimination des embeddings.
+
+\subsection{Analyse des compromis}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+  % Axes
+  \draw[->, >=stealth, thick, gray!80] (0,0) -- (10,0) node[right, font=\small, text=black] {Coût moyen par requête (\$)};
+  \draw[->, >=stealth, thick, gray!80] (0,0) -- (0,6) node[above, font=\small, text=black] {Latence médiane (ms)};
+  
+  % Grid and ticks for X axis
+  \foreach \cx/\xval in {1/0.000, 3/0.001, 5/0.002, 7/0.003, 9/0.004} {
+    \draw[gray!15, dashed] (\cx,0) -- (\cx,5.5);
+    \draw[gray!80] (\cx,2pt) -- (\cx,-2pt) node[below, font=\tiny, text=black] {\xval};
+  }
+  
+  % Grid and ticks for Y axis
+  \foreach \cy/\yval in {1/200, 2/400, 3/600, 4/800, 5/1000, 6/1200} {
+    \draw[gray!15, dashed] (0,\cy) -- (9.5,\cy);
+    \draw[gray!80] (2pt,\cy) -- (-2pt,\cy) node[left, font=\tiny, text=black] {\yval};
+  }
+  
+  % Zone optimale
+  % X = 0.0003 to 0.0018 => x = 1.6 to 4.6
+  % Y = 400 to 800 => y = 2 to 4
+  \fill[ensamprimary!8] (1.6,2) rectangle (4.6,4);
+  \draw[dashed, ensamprimary!50, thick] (1.6,2) rectangle (4.6,4);
+  \node[font=\tiny\color{ensamprimary}] at (3.1,2.2) {Zone optimale};
+  
+  % Data point: Ollama seul
+  \draw[fill=ensamgreen, draw=ensamgreen!80, thick] (1,4.25) circle (3pt);
+  \node[font=\scriptsize, anchor=east, xshift=-4pt] at (1,4.25) {Ollama (local)};
+  
+  % Data point: Groq seul
+  \draw[fill=ensamaccent, draw=ensamaccent!80, thick] (7,2.25) rectangle +(5pt,5pt);
+  \node[font=\scriptsize, anchor=west, xshift=6pt] at (7,2.35) {Groq (cloud)};
+  
+  % Data point: Hybride
+  \draw[fill=ensamprimary, draw=ensamprimary!80, thick] (3,3.4) +(-4pt,0) -- +(0,4pt) -- +(4pt,0) -- +(0,-4pt) -- cycle;
+  \node[font=\scriptsize\bfseries\color{ensamprimary}, anchor=south west, xshift=2pt] at (3,3.4) {Hybride};
+  
+  % Legend
+  
+\end{tikzpicture}
+\caption{Espace coût-latence : positionnement du routage hybride}
+\label{fig:cost_latency}
+\end{figure}
+
+\subsubsection{Synthèse des compromis systémiques}
+
+Le tableau~\ref{tab:tradeoffs} synthétise les compromis identifiés, répondant directement aux questions de recherche du CDC.
+
+\begin{table}[H]
+\centering
+\caption{Analyse des compromis systémiques}
+\label{tab:tradeoffs}
+\small
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+\textbf{Compromis} & \textbf{Tension identifiée} & \textbf{Notre résolution} \\
+\midrule
+\textbf{Modularité vs. Latence} & Chaque couche (mémoire, RAG, routing, audit) ajoute un overhead de traitement & Pipeline asynchrone avec opérations non-bloquantes en parallèle. Overhead mesuré : $<$50ms \\
+\addlinespace
+\textbf{Coût vs. Qualité} & Ollama est gratuit mais produit des réponses moins riches que Groq/Llama-3-70B & Routage intelligent : requêtes simples/sensibles $\rightarrow$ local ; requêtes complexes/analytiques $\rightarrow$ cloud \\
+\addlinespace
+\textbf{Traçabilité vs. Simplicité} & L'audit complet ajoute de la complexité dans le code et du stockage & Middleware transparent : l'observabilité est injectée sans modifier le code métier des agents \\
+\addlinespace
+\textbf{Confidentialité vs. Performance} & Le routage local protège les PII mais Ollama est plus lent que Groq & Détection PII automatique : seules les requêtes contenant des données sensibles sont routées localement \\
+\addlinespace
+\textbf{Persistance vs. Coût infra} & Redis/Neo4j amélioreraient la robustesse mais ajoutent des dépendances serveur & Stockage embarqué (ChromaDB fichier + JSON NetworkX) : suffisant pour un prototype, migrable vers Redis/Neo4j \\
+\addlinespace
+\textbf{Précision RAG vs. Latence} & Plus de chunks récupérés = meilleure couverture mais plus de tokens et latence & Top-5 avec seuil de score $>0.3$ : compromis empirique entre rappel et coût de tokens \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Évaluation de la gouvernance (S5)}
+
+Le scénario S5 valide la conformité GDPR :
+
+\begin{table}[H]
+\centering
+\caption{Résultats du scénario de gouvernance (S5)}
+\label{tab:gdpr_results}
+\small
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Test} & \textbf{Résultat} & \textbf{Détail} \\
+\midrule
+Création de 10 interactions & \checkmark & Données présentes dans les 3 couches \\
+Export données utilisateur & \checkmark & JSON complet : sessions, embeddings, n\oe{}uds graphe \\
+Exécution droit à l'oubli & \checkmark & Effacement en $<$500\,ms sur les 3 couches \\
+Vérification post-effacement & \checkmark & 0 donnée résiduelle dans les 3 couches \\
+Journal d'effacement & \checkmark & Entrée d'audit avec horodatage et détail \\
+\addlinespace
+\textbf{Overhead de gouvernance} & \textbf{$<$5\%} & Latence additionnelle due à l'audit et au cost tracking \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Limites identifiées}
+
+Notre système présente plusieurs limites qui doivent être explicitement reconnues :
+
+\begin{enumerate}
+  \item \textbf{Données MCP factices} : les serveurs Schedule et Grades utilisent des données codées en dur. Un déploiement réel nécessiterait une connexion au système d'information de l'ENSAM.
+
+  \item \textbf{Absence d'authentification} : le système identifie les utilisateurs par un identifiant localStorage, sans JWT, OAuth ni intégration CAS/LDAP. Un déploiement institutionnel exige une authentification forte.
+
+  \item \textbf{État en mémoire volatile} : les métriques, l'audit et la mémoire éphémère sont en RAM. Un redémarrage entraîne une perte partielle (seules la mémoire sémantique ChromaDB et le graphe JSON survivent).
+
+  \item \textbf{A2A non formel} : le DebateEngine et le routage du kernel constituent une communication inter-agents fonctionnelle, mais n'implémentent pas le protocole A2A formel de Google~\cite{google2025a2a} (Agent Cards, Task Protocol). L'interopérabilité avec des agents externes n'est pas possible en l'état.
+
+  \item \textbf{Sécurité MCP} : le contrôle d'accès par niveau est implémenté mais un bypass accorde les privilèges ADMIN à tous les utilisateurs par défaut — un correctif est nécessaire.
+
+  \item \textbf{Évaluation limitée} : l'évaluation repose sur des métriques automatiques. Une évaluation humaine (questionnaire de satisfaction auprès d'étudiants et d'enseignants) renforcerait la validité externe des résultats.
+
+  \item \textbf{Scalabilité non testée} : le système n'a été évalué qu'en mono-utilisateur. Le comportement sous charge concurrente (30+ étudiants simultanés) n'est pas connu.
+\end{enumerate}
+
+
+% ============================================================
+% SECTION 7 — CONCLUSION ET PERSPECTIVES
+% ============================================================
+\section{Conclusion et perspectives}
+\label{chap:conclusion}
+
+\subsection{Synthèse des contributions}
+
+Ce rapport a présenté ENSAM-Agent-OS, un système d'exploitation agentique local conçu pour le contexte universitaire de l'ENSAM Meknès. Notre contribution principale est la démonstration qu'un système agentique \textbf{gouverné} — intégrant mémoire tri-couche, RAG, outils MCP, routage hybride et observabilité — est réalisable dans un cadre institutionnel avec des ressources matérielles limitées (un PC portable avec 16\,Go de RAM).
+
+\subsection{Validation des hypothèses}
+
+Les résultats expérimentaux permettent de valider nos quatre sous-hypothèses :
+
+\begin{table}[H]
+\centering
+\caption{Bilan de validation des hypothèses}
+\label{tab:hypotheses_bilan}
+\small
+\begin{tabularx}{\textwidth}{l c X}
+\toprule
+\textbf{Hypothèse} & \textbf{Validée} & \textbf{Argument} \\
+\midrule
+\textbf{H1 — Modularité} & \checkmark & L'ajout d'un nouvel agent nécessite $\sim$50 lignes de code (sous-classe de BaseAgent). Un nouvel outil MCP : $\sim$30 lignes. Le changement de base vectorielle n'affecte que le module \texttt{semantic.py}. \\
+\addlinespace
+\textbf{H2 — Qualité} & \checkmark & L'intégration mémoire + RAG produit un score de pertinence moyen de 0.70 (top-3) et une précision de classification de 88.1\%. Les réponses avec contexte RAG sont jugées plus complètes et sourçables. \\
+\addlinespace
+\textbf{H3 — Coût} & \checkmark & Le routage hybride réduit les coûts de 67\% par rapport à un usage 100\% cloud (\$0.001 vs \$0.003/req), avec 62\% des requêtes traitées localement à coût nul. \\
+\addlinespace
+\textbf{H4 — Gouvernance} & \checkmark & La traçabilité complète et la conformité GDPR sont réalisées avec un overhead de latence $<$5\%. Le droit à l'oubli est fonctionnel en $<$500\,ms avec vérification. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Réponse aux questions de recherche}
+
+\begin{importantbox}[{Q1 : Quels compromis apparaissent quand on cherche \`{a} industrialiser un syst\`{e}me agentique local~?}]
+Les principaux compromis identifiés concernent trois axes :
+\begin{itemize}
+  \item \textbf{Coût / Qualité} : les modèles locaux (3B paramètres) sont gratuits mais produisent des réponses moins riches que les modèles cloud (70B paramètres). Le routage intelligent résout ce compromis en affectant chaque requête au provider approprié.
+  \item \textbf{Modularité / Latence} : chaque couche d'abstraction ajoute un overhead. Notre mesure montre que l'ensemble mémoire + RAG + audit + routing ajoute $<$50ms, négligeable par rapport au temps de génération LLM ($\sim$500--1500ms).
+  \item \textbf{Confidentialité / Performance} : le routage local protège les données mais est plus lent. La détection PII automatique limite ce surcoût aux seules requêtes véritablement sensibles.
+\end{itemize}
+\end{importantbox}
+
+\begin{importantbox}[{Q2 : Comment concilier qualit\'{e}, tra\c{c}abilit\'{e}, co\^{u}t et simplicit\'{e} de d\'{e}ploiement~?}]
+Notre approche montre que :
+\begin{itemize}
+  \item Un \textbf{middleware d'observabilité transparent} (non-intrusif dans le code métier) permet d'ajouter traçabilité et suivi des coûts sans complexité de développement excessive.
+  \item Le choix de \textbf{technologies embarquées} (ChromaDB fichier, NetworkX JSON, cache in-memory) plutôt que distribuées (Redis, Neo4j, Elasticsearch) simplifie drastiquement le déploiement (un seul \texttt{run.bat}) au prix d'une moindre scalabilité — acceptable pour un prototype universitaire.
+  \item La \textbf{séparation kernel/agents/services} permet à chaque composant d'évoluer indépendamment, facilitant la maintenance et l'évolution.
+\end{itemize}
+\end{importantbox}
+
+\subsection{Perspectives}
+
+\subsubsection{Court terme (1--3 mois)}
+
+\begin{enumerate}
+  \item \textbf{Protocole A2A formel} : implémenter les Agent Cards et le Task Protocol de Google~\cite{google2025a2a} pour permettre l'interopérabilité avec des agents externes et la découverte automatique de services.
+  \item \textbf{Authentification institutionnelle} : intégrer le SSO/CAS de l'ENSAM pour une gestion d'identité réelle avec rôles (étudiant, enseignant, administrateur).
+  \item \textbf{Données MCP réelles} : connecter les serveurs Schedule et Grades au système d'information de l'ENSAM via des API REST ou des vues SQL.
+\end{enumerate}
+
+\subsubsection{Moyen terme (3--6 mois)}
+
+\begin{enumerate}
+  \item \textbf{Persistance robuste} : migrer la mémoire éphémère vers Redis et le graphe vers Neo4j pour supporter le multi-worker et la tolérance aux pannes.
+  \item \textbf{RAG avancé} : ajouter du re-ranking (cross-encoder), du query rewriting, du chunking sémantique (au lieu de récursif), et du filtrage par métadonnées.
+  \item \textbf{Évaluation humaine} : conduire une étude utilisateur avec des étudiants et enseignants de l'ENSAM (questionnaire SUS, entretiens semi-directifs) pour valider la qualité perçue.
+\end{enumerate}
+
+\subsubsection{Long terme (6--12 mois)}
+
+\begin{enumerate}
+  \item \textbf{Déploiement multi-instances} : conteneurisation Docker avec orchestration Kubernetes pour un déploiement à l'échelle de l'établissement.
+  \item \textbf{Évaluation automatique continue} : intégrer des frameworks comme RAGAS ou DeepEval pour un monitoring continu de la qualité des réponses.
+  \item \textbf{Agents adaptatifs} : permettre aux agents d'apprendre de leurs erreurs passées via fine-tuning sur les retours utilisateur.
+  \item \textbf{Multi-université} : étendre le système à un réseau d'universités via le protocole A2A, chaque établissement hébergeant ses propres agents spécialisés.
+\end{enumerate}
+
+\vspace{1cm}
+
+\begin{notebox}[Mot de fin]
+ENSAM-Agent-OS démontre qu'un système agentique gouverné n'est pas seulement un assemblage de composants technologiques, mais un \textbf{choix architectural} qui place la traçabilité, la responsabilité et le respect de la vie privée au c\oe{}ur de la conception. Dans un monde où l'IA s'invite dans l'éducation, il est essentiel que les institutions gardent le contrôle de leurs données et de leurs outils — c'est la vocation de ce projet.
+\end{notebox}
+
+
+% ============================================================
+% BIBLIOGRAPHIE
+% ============================================================
+\begin{thebibliography}{99}
+\bibitem{kasneci2023chatgpt}
+Kasneci, E., et al. (2023). ChatGPT for good? On the potential and challenges of LLMs in education. \textit{Learning and Individual Differences}, 103, 102274.
+
+\bibitem{touvron2023llama}
+Touvron, H., et al. (2023). LLaMA: Open and efficient foundation language models. \textit{arXiv preprint arXiv:2302.13971}.
+
+\bibitem{langchain2023}
+Chase, H. (2023). LangChain. \textit{GitHub repository}. \url{https://github.com/langchain-ai/langchain}.
+
+\bibitem{wu2023autogen}
+Wu, Q., et al. (2023). AutoGen: Enabling next-gen LLM applications via multi-agent conversation framework. \textit{arXiv preprint arXiv:2308.08155}.
+
+\bibitem{hong2023metagpt}
+Hong, S., et al. (2023). MetaGPT: Meta programming for multi-agent collaborative framework. \textit{arXiv preprint arXiv:2308.07295}.
+
+\bibitem{crewai2024}
+Moura, J. (2024). CrewAI: Platform for orchestrating role-playing autonomous AI agents. \url{https://www.crewai.com}.
+
+\bibitem{langgraph2024}
+LangChain Authors. (2024). LangGraph: Building stateful, multi-actor applications with LLMs. \url{https://github.com/langchain-ai/langgraph}.
+
+\bibitem{packer2023memgpt}
+Packer, C., et al. (2023). MemGPT: Towards LLMs as operating systems. \textit{arXiv preprint arXiv:2310.08560}.
+
+\bibitem{xi2023rise}
+Xi, Z., et al. (2023). The rise of LLM agents: A survey. \textit{arXiv preprint arXiv:2308.11432}.
+
+\bibitem{wang2024survey}
+Wang, L., et al. (2024). A survey on large language model based autonomous agents. \textit{Frontiers of Computer Science}, 18(6), 1-26.
+
+\bibitem{wei2022cot}
+Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. \textit{Advances in Neural Information Processing Systems}, 35, 24824-24837.
+
+\bibitem{yao2023react}
+Yao, S., et al. (2023). ReAct: Synergizing reasoning and acting in language models. \textit{arXiv preprint arXiv:2210.03629}.
+
+\bibitem{schick2023toolformer}
+Schick, T., et al. (2023). Toolformer: Language models can teach themselves to use tools. \textit{arXiv preprint arXiv:2302.04761}.
+
+\bibitem{lewis2020rag}
+Lewis, P., et al. (2020). Retrieval-augmented generation for knowledge-intensive NLP tasks. \textit{Advances in Neural Information Processing Systems}, 33, 9459-9474.
+
+\bibitem{gao2023ragsurvey}
+Gao, Y., et al. (2023). Retrieval-augmented generation for large language models: A survey. \textit{arXiv preprint arXiv:2312.10997}.
+
+\bibitem{fan2024survey}
+Fan, X., et al. (2024). A survey on retrieval-augmented generation in large language models. \textit{arXiv preprint arXiv:2404.10997}.
+
+\bibitem{zhang2024survey}
+Zhang, D., et al. (2024). Memory in large language model based agents: A survey. \textit{arXiv preprint arXiv:2404.13561}.
+
+\bibitem{park2023generative}
+Park, J. S., et al. (2023). Generative agents: Interactive simulacra of human behavior. \textit{Proceedings of the ACM on Human-Computer Interaction}, 7(CSCW1), 1-22.
+
+\bibitem{anthropic2024mcp}
+Anthropic. (2024). Model Context Protocol (MCP). \url{https://modelcontextprotocol.org}.
+
+\bibitem{google2025a2a}
+Google. (2025). Agent-to-Agent (A2A) Protocol specification. \url{https://github.com/google/a2a-protocol}.
+
+\bibitem{langsmith2024}
+LangChain Authors. (2024). LangSmith: Platform for production-grade LLM applications. \url{https://smith.langchain.com}.
+
+\bibitem{opentelemetry2024}
+OpenTelemetry Authors. (2024). OpenTelemetry API and SDK specifications. \url{https://opentelemetry.io}.
+
+\bibitem{voigt2017gdpr}
+Voigt, P., \& Von dem Bussche, A. (2017). \textit{The EU General Data Protection Regulation (GDPR): A Practical Guide}. Springer.
+
+\bibitem{reimers2019sentence}
+Reimers, N., \& Gurevych, I. (2019). Sentence-BERT: Sentence embeddings using Siamese BERT-networks. \textit{arXiv preprint arXiv:1908.10084}.
+\end{thebibliography}
+
+
+% ============================================================
+% ANNEXES
+% ============================================================
+\appendix
+
+\section{Structure complète du code source}
+\label{app:code_structure}
+
+\begin{lstlisting}[style=jsonstyle, caption={Arborescence complète du projet}, label={lst:full_tree}]
+ENSAM-Agent-OS/
+|-- backend/
+|   |-- app/
+|   |   |-- __init__.py
+|   |   |-- config.py                 # Configuration centralisee
+|   |   |-- core/
+|   |   |   |-- kernel.py             # AgenticKernel
+|   |   |   |-- routing.py            # ModelRouter (PII + complexite)
+|   |   |   |-- llm.py                # LLMManager (Ollama + Groq)
+|   |   |   |-- events.py             # EventBus (pub/sub)
+|   |   |   |-- web_search.py         # DuckDuckGo scraper
+|   |   |-- agents/
+|   |   |   |-- base.py               # BaseAgent (Template Method)
+|   |   |   |-- intent_classifier.py  # Embedding classifier
+|   |   |   |-- general.py            # Meta-router
+|   |   |   |-- tutor.py              # Agent pedagogique
+|   |   |   |-- research.py           # Agent recherche
+|   |   |   |-- orientation.py        # Agent orientation
+|   |   |   |-- project.py            # Agent projets
+|   |   |   |-- admin.py              # Agent administratif
+|   |   |   |-- debate.py             # DebateEngine (A2A)
+|   |   |-- memory/
+|   |   |   |-- manager.py            # MemoryManager (facade)
+|   |   |   |-- ephemeral.py          # Cache TTL in-memory
+|   |   |   |-- semantic.py           # ChromaDB (3 collections)
+|   |   |   |-- graph.py              # NetworkX (DiGraph JSON)
+|   |   |   |-- gdpr.py               # GDPRManager (Art. 17)
+|   |   |-- rag/
+|   |   |   |-- pipeline.py           # RAGPipeline orchestrateur
+|   |   |   |-- ingestion.py          # FileParser + TextChunker
+|   |   |   |-- retriever.py          # SemanticRetriever
+|   |   |   |-- embeddings.py         # EmbeddingGenerator (cache)
+|   |   |   |-- auto_ingest.py        # Ingestion auto au demarrage
+|   |   |-- mcp/
+|   |   |   |-- registry.py           # ToolRegistry
+|   |   |   |-- client.py             # MCPClient (securite)
+|   |   |   |-- servers/
+|   |   |       |-- schedule.py       # EDT ENSAM 4A
+|   |   |       |-- grades.py         # Notes + GPA
+|   |   |       |-- documents.py      # Recherche docs + web
+|   |   |-- observability/
+|   |   |   |-- audit.py              # AuditLogger (JSON)
+|   |   |   |-- cost.py               # CostTracker (economies)
+|   |   |   |-- metrics.py            # MetricsCollector (p50/95/99)
+|   |   |   |-- telemetry.py          # OpenTelemetry setup
+|   |   |-- api/
+|   |       |-- main.py               # FastAPI app + lifespan
+|   |       |-- middleware.py          # RequestId, RateLimit, Timing
+|   |       |-- schemas.py            # Modeles Pydantic
+|   |       |-- deps.py               # Injection de dependances
+|   |       |-- routes/
+|   |           |-- chat.py           # /api/chat/*
+|   |           |-- rag.py            # /api/rag/*
+|   |           |-- mcp.py            # /api/mcp/*
+|   |           |-- memory.py         # /api/memory/*
+|   |           |-- observability.py  # /api/observability/*
+|   |           |-- agents.py         # /api/agents/*
+|   |           |-- system.py         # /api/system/*
+|   |-- data/                         # Documents RAG
+|   |-- pyproject.toml
+|   |-- test_classifier.py
+|-- frontend/
+|   |-- src/
+|   |   |-- app/                      # 7 pages Next.js
+|   |   |-- components/               # Sidebar, Header
+|   |   |-- lib/                      # api.ts, providers.tsx
+|   |-- package.json
+|-- article/                          # Ce rapport LaTeX
+|-- run.bat                           # Script de demarrage
+\end{lstlisting}
+
+\section{Endpoints API complets}
+\label{app:api}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{Méthode} & \textbf{Route} & \textbf{Module} & \textbf{Description} \\
+\midrule
+POST & \texttt{/api/chat} & chat & Envoyer un message au système agentique \\
+GET & \texttt{/api/chat/stream} & chat & Streaming SSE des réponses \\
+GET & \texttt{/api/chat/history/\{id\}} & chat & Historique d'une session \\
+DELETE & \texttt{/api/chat/history/\{id\}} & chat & Supprimer une session \\
+\midrule
+GET & \texttt{/api/agents} & agents & Lister les agents disponibles \\
+GET & \texttt{/api/agents/\{id\}} & agents & Détails d'un agent \\
+POST & \texttt{/api/agents/debate} & agents & Lancer un débat multi-rounds \\
+GET & \texttt{/api/agents/events/log} & agents & Journal des événements \\
+\midrule
+POST & \texttt{/api/rag/ingest} & rag & Ingérer un document (multipart) \\
+POST & \texttt{/api/rag/search} & rag & Recherche sémantique \\
+POST & \texttt{/api/rag/query} & rag & Question-réponse RAG \\
+GET & \texttt{/api/rag/documents} & rag & Lister les documents indexés \\
+DELETE & \texttt{/api/rag/documents/\{id\}} & rag & Supprimer un document (sauf système) \\
+GET & \texttt{/api/rag/stats} & rag & Statistiques des collections \\
+\midrule
+GET & \texttt{/api/mcp/tools} & mcp & Lister les outils MCP \\
+GET & \texttt{/api/mcp/tools/\{id\}} & mcp & Détails d'un outil \\
+POST & \texttt{/api/mcp/tools/test} & mcp & Tester un outil \\
+GET & \texttt{/api/mcp/tools/search/\{q\}} & mcp & Découverte d'outils \\
+GET & \texttt{/api/mcp/logs} & mcp & Logs d'exécution \\
+\midrule
+GET & \texttt{/api/memory/stats} & memory & Statistiques mémoire \\
+GET & \texttt{/api/memory/graph} & memory & Graphe de connaissances complet \\
+GET & \texttt{/api/memory/sessions} & memory & Sessions actives \\
+POST & \texttt{/api/memory/gdpr/forget} & memory & Droit à l'oubli (GDPR Art. 17) \\
+GET & \texttt{/api/memory/gdpr/verify} & memory & Vérification post-effacement \\
+GET & \texttt{/api/memory/gdpr/export} & memory & Export données utilisateur \\
+\midrule
+GET & \texttt{/api/observability/metrics} & obs & Métriques système \\
+GET & \texttt{/api/observability/costs} & obs & Suivi des coûts \\
+GET & \texttt{/api/observability/audit} & obs & Journal d'audit \\
+POST & \texttt{/api/observability/audit/export} & obs & Export audit JSON \\
+GET & \texttt{/api/observability/traces} & obs & Traces OpenTelemetry \\
+\midrule
+GET & \texttt{/api/system/health} & system & Santé des services \\
+GET & \texttt{/api/system/config} & system & Configuration actuelle \\
+PUT & \texttt{/api/system/routing} & system & Changer le mode de routage \\
+GET & \texttt{/api/system/resources} & system & Ressources (CPU, RAM, GPU) \\
+PUT & \texttt{/api/system/model} & system & Changer le modèle Ollama \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\section{Diagramme de séquence — Traitement d'une requête}
+\label{app:sequence}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\footnotesize},
+  actor/.style={draw, rounded corners=3pt, minimum height=0.6cm, minimum width=1.8cm, align=center, thick, fill=#1!10, draw=#1!50},
+  msg/.style={-{Stealth[length=2mm]}, thick, color=#1!70},
+  note/.style={draw=gray!40, fill=gray!5, rounded corners=2pt, font=\tiny, text width=2.5cm, align=left}
+]
+
+% Acteurs
+\node[actor=gray] (user) at (0,0) {Utilisateur};
+\node[actor=frontendcolor] (fe) at (3,0) {Frontend};
+\node[actor=gray] (api) at (6,0) {API};
+\node[actor=kernelcolor] (kernel) at (9,0) {Kernel};
+\node[actor=agentcolor] (agent) at (12,0) {Agent};
+
+% Lignes de vie
+\foreach \x in {user, fe, api, kernel, agent} {
+  \draw[dashed, gray!30] (\x.south) -- ++(0,-14);
+}
+
+% Messages
+\draw[msg=gray] (0,-1) -- node[above, font=\tiny] {message} (3,-1);
+\draw[msg=frontendcolor] (3,-1.5) -- node[above, font=\tiny] {POST /api/chat} (6,-1.5);
+\draw[msg=gray] (6,-2) -- node[above, font=\tiny] {process\_request()} (9,-2);
+
+\draw[msg=kernelcolor] (9,-2.8) -- node[above, font=\tiny] {classify(query)} (12,-2.8);
+\draw[msg=agentcolor, dashed] (12,-3.3) -- node[above, font=\tiny] {agent\_id, confidence} (9,-3.3);
+
+\draw[msg=kernelcolor] (9,-4) -- ++(1.5,0) node[right, font=\tiny] {memory.retrieve()};
+\draw[msg=kernelcolor] (9,-4.8) -- ++(1.5,0) node[right, font=\tiny] {rag.search()};
+\draw[msg=kernelcolor] (9,-5.6) -- ++(1.5,0) node[right, font=\tiny] {mcp.call\_tools()};
+
+\draw[msg=kernelcolor] (9,-6.5) -- node[above, font=\tiny] {agent.process()} (12,-6.5);
+
+\node[note] at (14,-7.5) {PII check\\$\rightarrow$ local/cloud\\LLM generate};
+
+\draw[msg=agentcolor, dashed] (12,-8.5) -- node[above, font=\tiny] {AgentResponse} (9,-8.5);
+
+\draw[msg=kernelcolor] (9,-9.3) -- ++(1.5,0) node[right, font=\tiny] {memory.save()};
+\draw[msg=kernelcolor] (9,-10.1) -- ++(1.5,0) node[right, font=\tiny] {cost\_tracker.record()};
+\draw[msg=kernelcolor] (9,-10.9) -- ++(1.5,0) node[right, font=\tiny] {audit\_logger.log()};
+
+\draw[msg=gray, dashed] (9,-11.8) -- node[above, font=\tiny] {response JSON} (6,-11.8);
+\draw[msg=frontendcolor, dashed] (6,-12.3) -- node[above, font=\tiny] {ChatResponse} (3,-12.3);
+\draw[msg=gray, dashed] (3,-12.8) -- node[above, font=\tiny] {affichage} (0,-12.8);
+
+\end{tikzpicture}
+\caption{Diagramme de séquence simplifié du traitement d'une requête}
+\label{fig:sequence}
+\end{figure}
+
+
+\end{document}

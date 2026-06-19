@@ -1,0 +1,220 @@
+{
+    "metadata": {
+        "university": "Université Moulay Ismaïl",
+        "school": "École Nationale Supérieure d'Arts et Métiers (ENSAM)",
+        "level": "4ème Année (4AS4)",
+        "semestre": "Semestre 4",
+        "session": "Session du printemps",
+        "academic_year": "2025-2026",
+        "type": "Cours, TD, TP",
+        "last_updated": "29-04-2026",
+        "branches_covered": [
+            "Commun",
+            "GC24 (Génie Civil)",
+            "GI-ILSI",
+            "IATD-SI"
+        ]
+    },
+    "time_slots": {
+        "Séance 1": "08H30 - 10H30",
+        "Séance 2": "10H30 - 12H30",
+        "Séance 3": "14H30 - 16H30",
+        "Séance 4": "16H30 - 18H30"
+    },
+    "schedule": {
+        "Lundi": {
+            "Sec1": {
+                "Séance 1": "Entreprenariat [Chameukh] (S17-24) / Ratt. $19 Entreprenariat [Chameukh] (S25)",
+                "Séance 2": "Projet personnel et professionnel II [Zaari] (S14-26)",
+                "Séance 3": "Maîtrise Statistiques des Procédés [Mahfoud] (S17-18) / Concepts Economiques de base pour l'ingénieur [Helmi] (S19-24) / TP Concepts Economiques de base pour l'ingénieur [Helmi] (S25-26)",
+                "Séance 4": "Maîtrise Statistiques des Procédés [Mahfoud] (S14-16, S19-20)"
+            },
+            "Sec2": {
+                "Séance 1": "Concepts Economiques de base pour l'ingénieur [Azzouzi] (S15-22) / TP Concepts Economiques de base pour l'ingénieur [Azzouzi-Maktoub] (S23-24)",
+                "Séance 2": "Initiation aux études de marché et au Marketing [Chawki] (S14-22, S15-17-21) / Ratt. $21 Initiation aux études de marché et au Marketing [Chawki] (S23) / TP Initiation aux études de marché et au Marketing [Chawki] (S24-26)",
+                "Séance 3": "Démarche Qualité [Bounou] (S14-25, S19)",
+                "Séance 4": "Maîtrise Statistiques des Procédés [Ezzine] (S15-18) / Ratt. $17 Initiation aux études de marché et au Marketing [Chawki] (S23)"
+            },
+            "Sec3": {
+                "Séance 1": "Projet personnel et professionnel II [Zaari] (S14-26)",
+                "Séance 2": "Maîtrise Statistiques des Procédés [Labbi] (S14-22)",
+                "Séance 3": "Entreprenariat [Chameukh] (S16, S18-23, S19) / Ratt. $19 Entreprenariat [Chameukh] (S24)",
+                "Séance 4": "Concepts Economiques de base pour l'ingénieur [Helmi] (S19-24) / TP Concepts Economiques de base pour l'ingénieur [Helmi] (S25-26)"
+            },
+            "Sec4": {
+                "Séance 1": "Maîtrise Statistiques des Procédés [Ezzine] (S14-20) / Ratt. $20 Maîtrise Statistiques des Procédés [Ezzine] (S22) / Ratt. S18 Entreprenariat [Sadiki] (S24)",
+                "Séance 2": "Démarche Qualité [Zhouri] (S14-25)",
+                "Séance 3": "G41: Langue française [Boulagrouh] (S14-17) / G42: Langue anglaise [Kettioui] (S14-17) / Maîtrise Statistiques des Procédés [Ezzine] (S18-20) / TP G41: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S22) / TP G42: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S23)",
+                "Séance 4": "G41: Langue anglaise [Kettioui] (S14-17) / G42: Langue française [Boulagrouh] (S14-17) / Maîtrise Statistiques des Procédés [Ezzine] (S19-20) / TP G41: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S22) / TP G42: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S23)"
+            },
+            "Sec5": {
+                "Séance 1": "Initiation aux études de marché et au Marketing [Chawki] (S14-22, S15-17-21) / Ratt. $21 Initiation aux études de marché et au Marketing [Chawki] (S23) / TP Initiation aux études de marché et au Marketing [Chawki] (S24-26)",
+                "Séance 2": "Concepts Economiques de base pour l'ingénieur [Azzouzi] (S15-22) / TP Concepts Economiques de base pour l'ingénieur [Azzouzi-Maktoub] (S23-24)",
+                "Séance 3": "G51: Langue française [El Arfaoui] (S14-17) / G52: Langue anglaise [Azalmad] (S14-17) / Maîtrise Statistiques des Procédés [Ezzine] (S21) / TP G51: Maîtrise Statistiques des Procédés [Dadda-Kaichouh] (S23) / TP G52: Maîtrise Statistiques des Procédés [Dadda-Kaichouh] (S24) / Ratt. $17 Initiation aux études de marché et au Marketing [Chawki] (S25)",
+                "Séance 4": "G51: Langue anglaise [Azalmad] (S14-17) / G52: Langue française [El Arfaoui] (S14-17) / Ratt. Av. S19 Démarche Qualité [Bounou] (S18) / Ratt. $15 Initiation aux études de marché et au Marketing [Chawki] (S22) / Maîtrise Statistiques des Procédés [Ezzine] (S21) / TP G51: Maîtrise Statistiques des Procédés [Dadda-Kaichouh] (S23)"
+            },
+            "Sec6": {
+                "Séance 1": "Démarche Qualité [Zhouri] (S14-25)",
+                "Séance 2": "Maîtrise Statistiques des Procédés [Abadi] (S15-19) / Ratt. S18 Entreprenariat [Sadiki] (S24)",
+                "Séance 3": "G61: Langue française [Amourri] (S14-17) / G62: Langue anglaise [Badaoui] (S14-17) / Maîtrise Statistiques des Procédés [Abadi] (S18-20) / TP G61: Maîtrise Statistiques des Procédés [Mahfoud-Bouidmar] (S21) / TP G62: Maîtrise Statistiques des Procédés [Mahfoud-Bouidmar-Kaichouh] (S22)",
+                "Séance 4": "G61: Langue anglaise [Badaoui] (S14-17) / G62: Langue française [Amourri] (S14-17) / Maîtrise Statistiques des Procédés [Abadi] (S18-20) / TP G61: Maîtrise Statistiques des Procédés [Mahfoud-Bouidmar] (S21) / TP G62: Maîtrise Statistiques des Procédés [Mahfoud-Bouidmar] (S22)"
+            },
+            "Sec7 (GC24)": {
+                "Séance 1": "Ratt. S14+17 Organisation des chantiers [Cherkaoui] (S22-23) / Ratt. $19 Thermique et acoustique du bâtiment [Arid] (S24) / Ouvrages d'arts (Conception des ponts) [Fadel] (S25-26)",
+                "Séance 2": "Organisation des chantiers [Cherkaoui] (S14-23) / Ratt. S19 Thermique et acoustique du bâtiment [Arid] (S24) / Ouvrages d'arts (Conception des ponts) [Fadel] (S25-26)",
+                "Séance 3": "Ouvrages d'arts (Conception des ponts) [Fadel] (S14-24) / Béton précontraint [Fadel] (S25-26) / G71: TP Thermique du bâtiment [Arid] (13h30-16h30)",
+                "Séance 4": "G72: TP Thermique du bâtiment [Arid] (13h30-16h30)"
+            },
+            "Sec8 (GIADT)": {
+                "Séance 1": "Digital Desktop Prototyping [Bakkas B.] (S19-21) / Modélisation 3D Interactive et Jeux Inte [Hajji] (8h) (S23-26)",
+                "Séance 2": "Digital Web Prototyping [Bakkas B.] (S19-21) / Modélisation 3D Interactive et Jeux Inte [Hajji] (8h) (S23-26) / Maîtrise Statistiques des Procédés [Ezzine] (S14-16)",
+                "Séance 3": "G81: Langue française [Ait-Alla] (S14-17) / G82: Langue anglaise [Khoumich] (S14-17) / Représentation et Résolution de Problème [HAJJI] (18h) (S18-22, S19) / Framework d'Agents Intelligents [HAJJI] (8h) (S23-26)",
+                "Séance 4": "G81: Langue anglaise [Khoumich] (S14-17) / G82: Langue française [Ait-Alla] (S14-17) / Représentation et Résolution de Problème [HAJJI] (18h) (S18-22, S19) / Framework d'Agents Intelligents [HAJJI] (8h) (S23-26)"
+            },
+            "Sec9 (G. Info)": {
+                "Séance 1": "G91: Langue française [Rhachim] (S14-17) / G92: Langue anglaise [Louatouate] (S14-17) / Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S19)",
+                "Séance 2": "G91: Langue anglaise [Louatouate] (S14-17) / G92: Langue française [Rhachim] (S14-17) / Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S19)",
+                "Séance 3": "Framework de Développement .Net [Ahmadi] (S14-23) / Virtual Reality / Augmented Reality [Lammini] (S23-26)",
+                "Séance 4": "Entreprenariat [Sekkat] (S14-21, S20) / Ratt. $20 Entreprenariat [Sekkat] (S22) / Virtual Reality / Augmented Reality [Lammini] (S23-25)"
+            }
+        },
+        "Mardi": {
+            "Sec1": {
+                "Séance 1": "Initiation aux études de marché et au Marketing [Guessous] (S14-22) / TP Initiation aux études de marché et au Marketing [Guessous-Maktoub] (S23-25)",
+                "Séance 2": "Démarche Qualité [Sekkat] (S14-25, S17) / Ratt. $17 Démarche Qualité [Sekkat] (S26)",
+                "Séance 3": "G11: Langue française [Jeddi] (S14-17, S17) / G12: Langue anglaise [Kettioui] (S14-17) / Maîtrise Statistiques des Procédés [Mahfoud] (S18-19, S19) / Concepts Economiques de base pour l'ingénieur [Helmi] (S20) / Ratt. $19-19 Maîtrise Statistiques des Procédés [Mahfoud] (S21-22) / TP G11: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S23) / Ratt. S23 TP G11: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S25) / TP G12: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S24)",
+                "Séance 4": "G11: Langue anglaise [Kettioui] (S14-17) / G12: Langue française [Jeddi] (S14-17) / Maîtrise Statistiques des Procédés [Mahfoud] (S18-19, S19) / Concepts Economiques de base pour l'ingénieur [Helmi] (S20) / Ratt. $19-20 Maîtrise Statistiques des Procédés [Mahfoud] (S21-22) / TP G11: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S23) / Ratt. S23 TP G11: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S25) / TP G12: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S24)"
+            },
+            "Sec2": {
+                "Séance 1": "Projet personnel et professionnel II [El Youssefi] (S14-26)",
+                "Séance 2": "Entreprenariat [Azzouzi] (S15-22) / Ratt. S21 Entreprenariat [Azzouzi] (S23)",
+                "Séance 3": "G21: Langue française [El Arfaoui] (S14-17) / G22: Langue anglaise [Azalmad] (S14-17) / Ratt. Av. S19 Démarche Qualité [Bounou] (S18) / Maîtrise Statistiques des Procédés [Ezzine] (S19-20) / TP G21: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S23) / TP G22: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S24)",
+                "Séance 4": "G21: Langue anglaise [Azalmad] (S14-17) / G22: Langue française [El Arfaoui] (S14-17) / Maîtrise Statistiques des Procédés [Ezzine] (S19-20) / Ratt. S15 Initiation aux études de marché et au Marketing [Chawki] (S22) / TP G21: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S23) / TP G22: Maîtrise Statistiques des Procédés [Ezzine-Douiri] (S24)"
+            },
+            "Sec3": {
+                "Séance 1": "Démarche Qualité [Sekkat] (S14-25, S17) / Ratt. $17 Démarche Qualité [Sekkat] (S26)",
+                "Séance 2": "Initiation aux études de marché et au Marketing [Guessous] (S14-22) / TP Initiation aux études de marché et au Marketing [Guessous-Maktoub] (S23-25)",
+                "Séance 3": "G31: Langue française [Boulagrouh] (S14-17) / G32: Langue anglaise [Bouknify] (S14-17) / Concepts Economiques de base pour l'ingénieur [Helmi] (S18) / Maîtrise Statistiques des Procédés [Labbi] (S19-20) / TP G32: Maîtrise Statistiques des Procédés [Abadi-Kaichouh] (S23)",
+                "Séance 4": "G31: Langue anglaise [Bouknify] (S14-17) / G32: Langue française [Boulagrouh] (S14-17) / Concepts Economiques de base pour l'ingénieur [Helmi] (S18) / Sup. Langue française [Boulagrouh] (S22) / TP G32: Maîtrise Statistiques des Procédés [Abadi-] (S23)"
+            },
+            "Sec7 (GC24)": {
+                "Séance 1": "Construction Métallique et mixte [Chaaba] (S14-20) / Projet Construction Métallique G71 [Chaaba]; Projet Alaoui] (S20-22)",
+                "Séance 2": "Construction Métallique et mixte [Chaaba] (S14-20) / Ouvrages géotechniques 72 [Aalil-M'harzi] (S21,23,25) / Ouvrages géotechniques 71 [Aalil-M'harzi] (S22,24,26) / Ratt. $17 Maitrise Statistiques des Procédés [Ezzine] (S20)",
+                "Séance 3": "Thermique et acoustique du bâtiment [Arid] (S14-19, S17-18-19) / TP G71: Construction Métallique et mixte [Ouahman] (S23-24) / Ratt. $23 Projet Construction Métallique G71 [Chaaba] (S23) / Ratt. $17-18 Thermique et acoustique du bâtiment [Arid] (S25-26)",
+                "Séance 4": "Thermique et acoustique du bâtiment [Arid] (S14-19, S17-18-19) / Ratt. S23 Projet Construction Métallique G71 [Chaaba] (S23) / Ratt. $17-18 Thermique et acoustique du bâtiment [Arid] (S25-26)"
+            },
+            "Sec8 (GIADT)": {
+                "Séance 1": "Digital Web Prototyping [Bakkas B.] (S24) / Ratt. $19 Digtal Desktop Prototyping [Bakkas B.] (S25) / Ratt. S21 Digital Web Prototyping",
+                "Séance 2": "Digital Web Prototyping [Bakkas B.] (S20-23) / Ratt. $19 Digtal Desktop Prototyping [Bakkas B.] (S24) / Ratt. $21 Digital Web Prototyping (S25)",
+                "Séance 3": "Maîtrise Statistiques des Procédés [Ezzine] (S14-17, S17) / TP G81: Maîtrise Statistiques des Procédés [Ezzine-Kaichouh] (S18) / TP G82: Maîtrise Statistiques des Procédés [Abadi-Douiri] (S18) / Ratt. 519 Démarche Qualité [El Hassani] (S20) / Maintenance par l'IA [Zaki] (S21-24) / Ratt. S24 G81 TP Industry X.0 and IoT Applications Sekkat/Maalouf-Ajebli (S25)",
+                "Séance 4": "Maîtrise Statistiques des Procédés [Ezzine] (S14-17) / TP G81: Maîtrise Statistiques des Procédés [Ezzine-Kaichouh] (S18) / TP G82: Maîtrise Statistiques des Procédés [Abadi-Douiri] (S18) / Ratt. 519 Démarche Qualité [El Hassani] (S20) / Maintenance par l'IA [Zaki] (S21-24) / Ratt. S24 G82 TP Industry X.0 and IoT Applications Sekkat/Maalouf-Ajebli (S25)"
+            }
+        },
+        "Mercredi": {
+            "Note": "Activités Pratiques (A.P.) Langues et Projets pour toutes les sections de Sec1 à Sec9",
+            "Sec9 (G. Info)": {
+                "Séance 1": "Natural Language Processing [Laatabi] (S15-22, S17-19) / Ratt. S21 Concepts Economiques de base pour l'ingénieur [Azzouzi] (S23) / TP Concepts Economiques de base pour l'ingénieur [Azzouzi] (S24-25)",
+                "Séance 2": "Deep Learning [El Hlouli] (S14-18, S20-24) / Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S19) / Entreprenariat [Chameukh] (S17-24, S19) / Ratt. $19 Entreprenariat [Chameukh] (S25) / Démarche Qualité [El Hassani] (S14-19) / TP Lean Six Sigma [El Hassani] (S21-22) / Ratt. $17-19 Natural Language Processing [Laatabi] (S18, S21) / Natural Language Processing [Laatabi] (S23)"
+            },
+            "Sec1_to_Sec9_Common": {
+                "Séance 3": "A.P. Gx1: Langue française [] (S14-20) / A.P. Gx2: Langue anglaise [] (S14-20) / Projets (S21-26)",
+                "Séance 4": "A.P. Gx1: Langue anglaise [] (S14-20) / A.P. Gx2: Langue française [] (S14-20) / Projets (S21-26)"
+            },
+            "Sec1": {
+                "Séance 1": "Framework de Développement .Net [Ahmadi] (S24)",
+                "Séance 2": "Virtual Reality / Augmented Reality [Lammini]"
+            }
+        },
+        "Jeudi": {
+            "Sec7 (GC24)": {
+                "Séance 1": "Ouvrages géotechniques [Aalil] (S14-26)",
+                "Séance 2": "Passation des marchés publics [Tafraouti] (S17-26)",
+                "Séance 3": "Concepts Economiques de base pour l'ingénieur [Azzouzi] (S15-22) / TP Concepts Economiques de base pour l'ingénieur [Azzouzi-Maktoub] (S23-24)",
+                "Séance 4": "Initiation aux études de marché et au Marketing [Guessous] (S14-22) / TP Initiation aux études de marché et au Marketing [Guessous-Maktoub] (S23-25)"
+            },
+            "Sec8 (GIADT)": {
+                "Séance 1": "Lean Six Sigma Intelligent et Conception Collaborative Basée sur les Données [El Hassani] (S14-22)",
+                "Séance 2": "Lean Six Sigma Intelligent et Conception Collaborative Basée sur les Données [El Hassani] (S14-22)",
+                "Séance 3": "Projet personnel et professionnel II [Fadili] (S14-26, S24) / Ratt. $17 Framework de Développement .Net [Ahmadi] (S17) / Cryptographie, Cybersécurité et BlockChain [Benazza] (S19-26)",
+                "Séance 4": "Entreprenariat [Azzouzi] (S15-22) / Projet personnel et professionnel II [Fadili] (S14-26, S24) / Entreprenariat [Sadiki] (S17-24, S18)"
+            },
+            "Sec1": {
+                "Séance 1": "Web Services [Sahmoudi] (S14-19) / Architectures Logicielles et Outils d'Industrialisation (DevOps) [Sahmoudi] (S20-26, S22)",
+                "Séance 2": "Web Services [Sahmoudi] (S14-18) / Architectures Logicielles et Outils d'Industrialisation (DevOps) [Sahmoudi] (S19-26)"
+            },
+            "Sec2": {
+                "Séance 1": "Initiation aux études de marché et au Marketing [Bouhaddou] (S14-18, S20-23) / TP Initiation aux études de marché et au Marketing [Bouhaddou-Maktoub] (S24-26)",
+                "Séance 2": "Concepts Economiques de base pour l'ingénieur [Chawki] (S14-21) / TP Concepts Economiques de base pour l'ingénieur [Chawki] (S22-23)"
+            },
+            "Sec3": {
+                "Séance 3": "Projet personnel et professionnel II [Chaibat] (S14-26)"
+            },
+            "Sec4": {
+                "Séance 4": "Projet personnel et professionnel II [Chaibat] (S14-26)"
+            },
+            "Sec5": {
+                "Séance 1": "Démarche Qualité [Bounou] (S14-25, S19)",
+                "Séance 2": "Maîtrise Statistiques des Procédés [Ezzine] (S14-22) / Ratt. $18 Entreprenariat [Sadiki] (S24)",
+                "Séance 3": "Ratt. S17 Initiation aux études de marché et au Marketing [Chawki] (S23)",
+                "Séance 4": "Projet personnel et professionnel II [Chaibat] (S14-26)"
+            },
+            "Sec6": {
+                "Séance 1": "Concepts Economiques de base pour l'ingénieur [Chawki] (S14-21) / TP Concepts Economiques de base pour l'ingénieur [Chawki] (S22-23)",
+                "Séance 2": "Projet personnel et professionnel II [Brahim] (S14-26)",
+                "Séance 4": "Initiation aux études de marché et au Marketing [Guessous] (S14-22) / TP Initiation aux études de marché et au Marketing [Guessous] (S23-25)"
+            }
+        },
+        "Vendredi": {
+            "Sec7 (GC24)": {
+                "Séance 1": "Ouvrages géotechniques [Aalil] (S15-18) / Calcul parasismique [Bahi] (S19-24) / TP G71: Construction Métallique et mixte [Ouahman] (08h30-11h30) (S25-26)",
+                "Séance 2": "Démarche Qualité [El Hassani] (S14-19) / Ratt. S23 TP G71: Construction Métallique et mixte [Ouahman] (10h30-13h30) (S23)",
+                "Séance 3": "G71: Langue française [Laghzioui] (S14-17) / G72: Langue anglaise [El Arrouji] (S14-17) / Démarche Qualité [El Hassani] (S20) / TP G72: Construction Métallique et mixte [Ouahman] (15h00-18h00) (S23-26)",
+                "Séance 4": "G71: Langue anglaise [El Arrouji] (S14-17) / G72: Langue française [Laghzioui] (S14-17) / Démarche Qualité [El Hassani] (S20)"
+            },
+            "Sec8 (GIADT)": {
+                "Séance 1": "Représentation et Résolution de Problème [HAJJI] (18h) (S14-17) / Industry X.0 and IoT Applications Sekkat/Maalouf (S20-22)",
+                "Séance 2": "Représentation et Résolution de Problème [HAJJI] (18h) (S14-17) / Industry X.0 and IoT Applications Sekkat/Maalouf (S20-22) / Ratt. $22 Projet personnel et professionnel II [Fadili] (S23, S25)",
+                "Séance 3": "Digital Desktop Prototyping [Bakkas B.] (S14-19) / Virtual and Augmented Reality Masrour-Ajebli/Maalouf (S20-25) / Ratt. $19 Représentation et Résolution de Problème [HAJJI] (S26)",
+                "Séance 4": "Digital Desktop Prototyping [Bakkas B.] (S14-19) / Virtual and Augmented Reality Masrour-Ajebli/Maalouf (S20-25) / Ratt. $19 Représentation et Résolution de Problème [HAJJI] (S26)"
+            },
+            "Sec9 (G. Info)": {
+                "Séance 1": "Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S18) / Ratt. S22-24 Projet personnel et professionnel II [Fadili] (S23, S25)",
+                "Séance 2": "Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S18) / Initiation aux études de marché et au Marketing [Bouhaddou] (S15-17, S19-23, S19) / TP Initiation aux études de marché et au Marketing [Bouhaddou-Maktoub] (S24-26)",
+                "Séance 3": "Ingénierie Logicielle: qualité, test et intégration [S. Amri] (S14-18) / Framework de Développement JEE [S. Amri] (S19-23)",
+                "Séance 4": "Ingénierie Logicielle: qualité, test et intégration [S. Amri] (S14-18) / Framework de Développement JEE [S. Amri] (S19-23)"
+            }
+        },
+        "Samedi": {
+            "Sec1": {
+                "Séance 1": "Ratt. S23 TP G11: Maîtrise Statistiques des Procédés [Mahfoud-] (S23)"
+            },
+            "Sec2": {
+                "Séance 1": "S23"
+            },
+            "Sec3": {
+                "Séance 1": "TP G31: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh] (S17-24)"
+            },
+            "Sec4": {
+                "Séance 1": "Entreprenariat [Sadiki] (S17-24, S18)"
+            },
+            "Sec5": {
+                "Séance 1": "TP G31: Maîtrise Statistiques des Procédés [Mahfoud-Kaichouh]"
+            },
+            "Sec6": {
+                "Séance 2": "Entreprenariat [Sadiki] (S17-24, S18)"
+            },
+            "Sec7 (GC24)": {
+                "Séance 1": "S25",
+                "Séance 2": "S25"
+            },
+            "Sec8 (GIADT)": {
+                "Séance 1": "G81 TP Industry X.0 and IoT Applications Sekkat/Maalouf-Ajebli (S20-25, S21-24) / Ratt. S21 G1 TP Industry X.0 and IoT Applications Sekkat/Maalouf-Ajebli (S26)",
+                "Séance 2": "G82 TP Industry X.0 and loT Applications Sekkat/Maalouf-Ajebli (S20-25, S21-24) / Ratt. S21 G2 TP Industry X.0 and loT Applications Sekkat/Maalouf-Ajebli (S26)"
+            },
+            "Sec9 (G. Info)": {
+                "Séance 1": "Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S18)",
+                "Séance 2": "Cryptographie, Cybersécurité et BlockChain [Zennouhi] (S18)"
+            }
+        }
+    }
+}
