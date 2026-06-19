@@ -1,32 +1,32 @@
-# 🚀 ENSAM-Agent-OS
+# ENSAM-Agent-OS
 
-**ENSAM-Agent-OS** est un système d'exploitation agentique local et gouverné, conçu spécifiquement pour le contexte académique de l'**ENSAM Meknès** (École Nationale Supérieure d'Arts et Métiers). 
+ENSAM-Agent-OS est un système d'exploitation agentique local et gouverné, conçu spécifiquement pour le contexte académique de l'ENSAM Meknès (École Nationale Supérieure d'Arts et Métiers). 
 
-Cette plateforme intègre une architecture multi-agents spécialisés, un système de mémoire tri-couche persistante, un pipeline RAG (Génération Augmentée par Récupération), un registre d'outils standardisé via le protocole MCP (Model Context Protocol) et un mécanisme de débat inter-agents. Le système met l'accent sur la **gouvernance**, l'**observabilité**, le **contrôle des coûts** et le respect strict de la **confidentialité des données** (conformité RGPD / GDPR).
+Cette plateforme intègre une architecture multi-agents spécialisés, un système de mémoire tri-couche persistante, un pipeline RAG (Génération Augmentée par Récupération), un registre d'outils standardisé via le protocole MCP (Model Context Protocol) et un mécanisme de débat inter-agents. Le système met l'accent sur la gouvernance, l'observabilité, le contrôle des coûts et le respect strict de la confidentialité des données (conformité RGPD / GDPR).
 
 ---
 
-## 🏗️ Architecture du Système
+## Architecture du Système
 
-ENSAM-Agent-OS repose sur une architecture en couches orchestrée par un noyau central : l'**AgenticKernel**.
+ENSAM-Agent-OS repose sur une architecture en couches orchestrée par un noyau central : l'AgenticKernel.
 
 ```mermaid
 graph TD
-    subgraph Frontend [Couche 5 — Interface Utilisateur (Next.js)]
+    subgraph Frontend ["Couche 5 - Interface Utilisateur (Next.js)"]
         UI[Dashboard & Chat Interface]
     end
 
-    subgraph Backend [Couche 4 — API Gateway (FastAPI)]
+    subgraph Backend ["Couche 4 - API Gateway (FastAPI)"]
         API[REST Endpoints & Middleware]
     end
 
-    subgraph Kernel [Couche 3 — Noyau d'Orchestration (AgenticKernel)]
+    subgraph Kernel ["Couche 3 - Noyau d'Orchestration (AgenticKernel)"]
         AK[AgenticKernel]
         EB[Event Bus]
         Classifier[Intent Classifier]
     end
 
-    subgraph Agents [Couche 2 — Agents Spécialisés]
+    subgraph Agents ["Couche 2 - Agents Spécialisés"]
         TutorAgent[Tutor Agent]
         ResearchAgent[Research Agent]
         OrientationAgent[Orientation Agent]
@@ -35,7 +35,7 @@ graph TD
         DebateAgent[Debate Agent]
     end
 
-    subgraph Services [Couche 1 — Services & Stockage]
+    subgraph Services ["Couche 1 - Services & Stockage"]
         Memory[Mémoire Tri-couche]
         RAG[Pipeline RAG]
         MCP[Registre d'Outils MCP]
@@ -58,52 +58,52 @@ graph TD
 ```
 
 ### 1. Les 6 Agents Spécialisés
-*   🎓 **Tutor Agent** : Accompagnement pédagogique personnalisé, explications de cours et création de quiz.
-*   🔬 **Research Agent** : Synthèse de publications, veille technologique et rédaction scientifique.
-*   🎯 **Orientation Agent** : Conseil sur le parcours académique, les stages et les débouchés professionnels.
-*   💼 **Project Agent** : Gestion des projets étudiants, suivi de jalons et répartition des tâches.
-*   🏫 **Admin Agent** : Réponse aux questions administratives de l'ENSAM (inscriptions, examens, etc.).
-*   ⚖️ **Debate Agent** : Orchestration de débats contradictoires multi-rounds entre points de vue alternatifs pour approfondir un sujet.
+*   Tutor Agent : Accompagnement pédagogique personnalisé, explications de cours et création de quiz.
+*   Research Agent : Synthèse de publications, veille technologique et rédaction scientifique.
+*   Orientation Agent : Conseil sur le parcours académique, les stages et les débouchés professionnels.
+*   Project Agent : Gestion des projets étudiants, suivi de jalons et répartition des tâches.
+*   Admin Agent : Réponse aux questions administratives de l'ENSAM (inscriptions, examens, etc.).
+*   Debate Agent : Orchestration de débats contradictoires multi-rounds entre points de vue alternatifs pour approfondir un sujet.
 
 ### 2. Le Système Mémoire Tri-couche
-*   🧠 **Mémoire Éphémère (Court terme)** : Gestion des conversations en cours avec un mécanisme de Time-to-Live (TTL).
-*   🗂️ **Mémoire Sémantique (Long terme)** : Stockage d'embeddings vectoriels dans **ChromaDB** pour la récupération sémantique de faits passés.
-*   🕸️ **Graphe de Connaissances** : Modélisation des relations complexes entre entités (étudiants, cours, projets) à l'aide de **NetworkX**.
+*   Mémoire Éphémère (Court terme) : Gestion des conversations en cours avec un mécanisme de Time-to-Live (TTL).
+*   Mémoire Sémantique (Long terme) : Stockage d'embeddings vectoriels dans ChromaDB pour la récupération sémantique de faits passés.
+*   Graphe de Connaissances : Modélisation des relations complexes entre entités (étudiants, cours, projets) à l'aide de NetworkX.
 
 ### 3. Gouvernance et Sécurité
-*   🕵️‍♂️ **Routage Sensible au PII (Données Personnelles)** : Analyse des requêtes et anonymisation des informations sensibles avant tout appel à des API externes.
-*   🔀 **Routage Hybride Local/Cloud** : Routage automatique des requêtes complexes vers des modèles distants performants (via Groq) et traitement des requêtes simples ou sensibles en local (via Ollama) pour optimiser les coûts et la sécurité.
-*   📜 **Droit à l'Oubli (GDPR)** : Fonctionnalité d'effacement complet des données personnelles et historiques sur simple demande.
+*   Routage Sensible au PII (Données Personnelles) : Analyse des requêtes et anonymisation des informations sensibles avant tout appel à des API externes.
+*   Routage Hybride Local/Cloud : Routage automatique des requêtes complexes vers des modèles distants performants (via Groq) et traitement des requêtes simples ou sensibles en local (via Ollama) pour optimiser les coûts et la sécurité.
+*   Droit à l'Oubli (GDPR) : Fonctionnalité d'effacement complet des données personnelles et historiques sur simple demande.
 
 ---
 
-## 📂 Structure du Dépôt
+## Structure du Dépôt
 
 Le projet est divisé en trois dossiers principaux :
 
-*   📂 **`backend/`** : Code source Python de l'API REST et de l'AgenticKernel.
+*   `backend/` : Code source Python de l'API REST et de l'AgenticKernel.
     *   `app/core/` : Composants noyau (Kernel, Event Bus, LLM, Web Search).
     *   `app/agents/` : Définitions et logique des agents spécialisés.
     *   `app/memory/` : Gestion de la mémoire et conformité RGPD.
     *   `app/rag/` : Pipeline d'ingestion et de recherche de documents.
     *   `app/mcp/` : Registre des outils externes compatibles avec le Model Context Protocol.
     *   `app/observability/` : Audit, traçabilité et monitoring de coûts.
-*   📂 **`frontend/`** : Interface utilisateur en Next.js (React) et Tailwind CSS.
+*   `frontend/` : Interface utilisateur en Next.js (React) et Tailwind CSS.
     *   `src/app/` : Pages du dashboard (Chat, Analytics, Knowledge, Privacy, Settings).
     *   `src/components/` : Composants réutilisables (graphiques de coûts, logs d'audit, chat interactif).
-*   📂 **`article/`** : Code source LaTeX et PDF du rapport de recherche appliquée (~40 pages).
+*   `article/` : Code source LaTeX et PDF du rapport de recherche appliquée (~40 pages).
     *   `Rapport_Projet_Métier.tex` : Document LaTeX complet détaillant la méthodologie, l'architecture et les résultats.
     *   `Rapport_Projet_Métier.pdf` : Version compilée prête à la lecture.
 
 ---
 
-## 🚀 Démarrage Rapide
+## Démarrage Rapide
 
 ### Prérequis
 *   Windows 10/11 ou Linux.
-*   **Python 3.10+** (installé de préférence avec le gestionnaire de paquets `uv`).
-*   **Node.js v18+** et `npm`.
-*   *(Optionnel)* **Ollama** installé localement avec le modèle `qwen2.5:7b` ou `llama3:8b`.
+*   Python 3.10+ (installé de préférence avec le gestionnaire de paquets uv).
+*   Node.js v18+ et npm.
+*   (Optionnel) Ollama installé localement avec le modèle qwen2.5:7b ou llama3:8b.
 
 ### Lancement Automatique (Windows)
 Pour lancer l'ensemble de l'application (backend + frontend) en une seule fois, double-cliquez sur le script fourni à la racine :
@@ -135,23 +135,23 @@ npm run dev
 ```
 
 ### Accès aux Services
-*   🖥️ **Dashboard Frontend** : [http://localhost:3000](http://localhost:3000)
-*   ⚙️ **Documentation Swagger API** : [http://localhost:8000/docs](http://localhost:8000/docs)
+*   Dashboard Frontend : http://localhost:3000
+*   Documentation Swagger API : http://localhost:8000/docs
 
 ---
 
-## 📄 Rapport de Recherche Scientifique (LaTeX)
+## Rapport de Recherche Scientifique (LaTeX)
 
-Le dossier `article/` contient le rapport complet décrivant la genèse, l'évaluation et la pertinence académique d'**ENSAM-Agent-OS**. 
+Le dossier `article/` contient le rapport complet décrivant la genèse, l'évaluation et la pertinence académique d'ENSAM-Agent-OS. 
 
 ### Structure du Rapport :
-1.  **Introduction & Problématique** : Contexte éducatif et contraintes de sécurité.
-2.  **État de l'Art** : Analyse comparative des frameworks multi-agents (AutoGen, LangGraph, CrewAI) et des protocoles MCP/A2A.
-3.  **Méthodologie** : Protocole d'évaluation et architecture générale en 5 couches.
-4.  **Implémentation Détaillée** : Explications de l'AgenticKernel, du routage PII-aware et de la mémoire tri-couche.
-5.  **Évaluation Expérimentale** : Scénarios réels de test, métriques de latence, économie de coûts et couverture RGPD.
-6.  **Analyse des Résultats** : Compromis performance/coût/sécurité.
-7.  **Conclusion & Perspectives** : Évolutions futures.
+1.  Introduction & Problématique : Contexte éducatif et contraintes de sécurité.
+2.  État de l'Art : Analyse comparative des frameworks multi-agents (AutoGen, LangGraph, CrewAI) et des protocoles MCP/A2A.
+3.  Méthodologie : Protocole d'évaluation et architecture générale en 5 couches.
+4.  Implémentation Détaillée : Explications de l'AgenticKernel, du routage PII-aware et de la mémoire tri-couche.
+5.  Évaluation Expérimentale : Scénarios réels de test, métriques de latence, économie de coûts et couverture RGPD.
+6.  Analyse des Résultats : Compromis performance/coût/sécurité.
+7.  Conclusion & Perspectives : Évolutions futures.
 
 ### Compilation Locale :
 Si vous possédez une distribution LaTeX locale (comme MiKTeX ou TeX Live), vous pouvez compiler le rapport avec :
@@ -162,11 +162,11 @@ bibtex Rapport_Projet_Métier # si applicable
 pdflatex Rapport_Projet_Métier.tex
 pdflatex Rapport_Projet_Métier.tex
 ```
-*(Le document est également entièrement compatible avec **Overleaf** pour une compilation sans installation locale).*
+*(Le document est également entièrement compatible avec Overleaf pour une compilation sans installation locale).*
 
 ---
 
-## 👥 Auteur et Encadrant
-*   **Auteur** : Mourad Boutrid (Étudiant en 4A IATD-SI, ENSAM Meknès)
-*   **Encadrant** : Prof. Hajji Tarik
-*   **Module** : Représentation et Résolution de Problèmes en IA (Année 2025–2026)
+## Auteur et Encadrant
+*   Auteur : Mourad Boutrid (Étudiant en 4A IATD-SI, ENSAM Meknès)
+*   Encadrant : Prof. Hajji Tarik
+*   Module : Représentation et Résolution de Problèmes en IA (Année 2025–2026)
